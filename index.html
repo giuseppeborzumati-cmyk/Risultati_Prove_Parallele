@@ -3,633 +3,345 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analisi Prove Parallele - Advanced SPA</title>
+    <title>Report Analitico Parallele - Completo</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Chart.js -->
+    <!-- Chart.js e Plugin Datalabels -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <!-- Chart.js DataLabels Plugin per le percentuali in bella mostra -->
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
-    
-    <!-- SheetJS per Excel -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    
-    <!-- html2pdf per PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
         body {
-            font-family: 'Outfit', sans-serif;
-            background-color: #0f172a;
-            color: #ffffff;
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
         }
-
-        /* Sfondo animato super colorato */
-        .mesh-bg {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: -2;
-            background: linear-gradient(45deg, #4f46e5, #ec4899, #06b6d4, #8b5cf6);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
+        .card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
         }
-
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* Forme fluttuanti (Blobs) */
-        .shape {
-            position: fixed;
-            filter: blur(80px);
-            z-index: -1;
-            opacity: 0.6;
-            animation: float 20s infinite ease-in-out alternate;
-        }
-        .shape-1 { width: 400px; height: 400px; background: #fbbf24; top: -10%; left: -10%; animation-delay: 0s; }
-        .shape-2 { width: 500px; height: 500px; background: #38bdf8; bottom: -20%; right: -10%; animation-delay: -5s; }
-        .shape-3 { width: 300px; height: 300px; background: #f43f5e; top: 40%; left: 40%; animation-delay: -10s; }
-
-        @keyframes float {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(50px, 50px) scale(1.2); }
-        }
-
-        /* Effetto Vetro (Glassmorphism) */
-        .glass {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-        }
-
-        .glass-card {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            transition: transform 0.3s ease, border-color 0.3s ease;
-        }
-        .glass-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-
-        /* Gestione Pagine SPA */
-        .page-section {
+        .tab-content {
             display: none;
-            animation: fadeIn 0.5s ease-out forwards;
+            animation: fadeIn 0.3s ease-in-out;
         }
-        .page-section.active {
+        .tab-content.active {
             display: block;
         }
-
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(5px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
-        /* Nav Pills Custom */
-        .nav-pill {
-            transition: all 0.3s ease;
+        .legend-dot {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 6px;
         }
-        .nav-pill.active {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.5);
-            color: #fff;
-            box-shadow: 0 0 15px rgba(255,255,255,0.2);
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.8); }
-        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.4); }
     </style>
 </head>
-<body class="min-h-screen relative flex flex-col">
+<body class="p-4 md:p-8">
 
-    <!-- Elementi Sfondo Animato -->
-    <div class="mesh-bg"></div>
-    <div class="shape shape-1 rounded-full"></div>
-    <div class="shape shape-2 rounded-full"></div>
-    <div class="shape shape-3 rounded-full"></div>
-
-    <!-- Top Navbar per Navigazione Pagine -->
-    <header class="sticky top-0 z-50 glass border-b-0 border-white/20 py-4 px-6 shadow-2xl">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-white text-indigo-600 flex items-center justify-center font-bold text-xl shadow-[0_0_15px_rgba(255,255,255,0.8)]">
-                    <i class="fa-solid fa-graduation-cap"></i>
-                </div>
-                <h1 class="text-2xl font-black tracking-wider uppercase drop-shadow-md text-white">EduMetrics<span class="text-pink-300">Pro</span></h1>
-            </div>
-
-            <!-- Menu a schede -->
-            <nav class="flex flex-wrap justify-center gap-2">
-                <button onclick="switchPage('dashboard')" id="nav-dashboard" class="nav-pill active glass px-4 py-2 rounded-full text-sm font-bold border border-white/10 text-white/80 hover:text-white hover:bg-white/10">
-                    <i class="fa-solid fa-chart-pie mr-1"></i> Panoramica
-                </button>
-                <button onclick="switchPage('prime')" id="nav-prime" class="nav-pill glass px-4 py-2 rounded-full text-sm font-bold border border-white/10 text-white/80 hover:text-white hover:bg-white/10">
-                    <i class="fa-solid fa-1 mr-1"></i> Prime
-                </button>
-                <button onclick="switchPage('seconde')" id="nav-seconde" class="nav-pill glass px-4 py-2 rounded-full text-sm font-bold border border-white/10 text-white/80 hover:text-white hover:bg-white/10">
-                    <i class="fa-solid fa-2 mr-1"></i> Seconde
-                </button>
-                <button onclick="switchPage('terze')" id="nav-terze" class="nav-pill glass px-4 py-2 rounded-full text-sm font-bold border border-white/10 text-white/80 hover:text-white hover:bg-white/10">
-                    <i class="fa-solid fa-3 mr-1"></i> Terze
-                </button>
-                <button onclick="switchPage('export')" id="nav-export" class="nav-pill glass px-4 py-2 rounded-full text-sm font-bold border border-white/10 text-amber-200 hover:text-white hover:bg-white/10">
-                    <i class="fa-solid fa-file-export mr-1"></i> Report & Download
-                </button>
-            </nav>
-        </div>
-    </header>
-
-    <main class="flex-grow w-full max-w-7xl mx-auto p-4 md:p-8 z-10" id="print-area">
+    <div class="max-w-7xl mx-auto">
         
-        <!-- ==================== PAGINA 1: PANORAMICA ==================== -->
-        <section id="page-dashboard" class="page-section active">
-            <div class="text-center mb-12">
-                <h2 class="text-4xl md:text-5xl font-black text-white mb-4 drop-shadow-lg">Dashboard d'Istituto</h2>
-                <p class="text-white/80 font-medium text-lg">Analisi Globale Intermedie I Quadrimestre 25-26</p>
-                <div class="w-32 h-1 bg-gradient-to-r from-pink-500 to-cyan-400 mx-auto mt-6 rounded-full"></div>
-            </div>
+        <header class="mb-8 text-center md:text-left">
+            <h1 class="text-3xl md:text-4xl font-extrabold text-slate-800 tracking-tight">
+                <i class="fa-solid fa-chart-pie text-indigo-600 mr-3"></i>Report Analitico Parallele
+            </h1>
+            <p class="text-slate-500 mt-2 text-lg">Report dettagliato Prime, Seconde e Terze con analisi testuale</p>
+        </header>
 
-            <!-- Box Riassuntivi (KPI) -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                <div class="glass-card p-6 rounded-3xl flex items-center gap-5 border-t-4 border-t-pink-500">
-                    <div class="w-14 h-14 rounded-2xl bg-pink-500/20 text-pink-400 flex items-center justify-center text-2xl"><i class="fa-solid fa-book"></i></div>
-                    <div>
-                        <p class="text-white/60 text-sm font-bold uppercase">Media Italiano</p>
-                        <p class="text-3xl font-black text-white" id="kpi-ita">--</p>
-                    </div>
-                </div>
-                <div class="glass-card p-6 rounded-3xl flex items-center gap-5 border-t-4 border-t-cyan-400">
-                    <div class="w-14 h-14 rounded-2xl bg-cyan-400/20 text-cyan-400 flex items-center justify-center text-2xl"><i class="fa-solid fa-square-root-variable"></i></div>
-                    <div>
-                        <p class="text-white/60 text-sm font-bold uppercase">Media Matematica</p>
-                        <p class="text-3xl font-black text-white" id="kpi-mat">--</p>
-                    </div>
-                </div>
-                <div class="glass-card p-6 rounded-3xl flex items-center gap-5 border-t-4 border-t-violet-400">
-                    <div class="w-14 h-14 rounded-2xl bg-violet-400/20 text-violet-400 flex items-center justify-center text-2xl"><i class="fa-solid fa-language"></i></div>
-                    <div>
-                        <p class="text-white/60 text-sm font-bold uppercase">Media Inglese</p>
-                        <p class="text-3xl font-black text-white" id="kpi-ing">--</p>
-                    </div>
-                </div>
-            </div>
+        <!-- Menu di Navigazione a Schede (Tabs) -->
+        <nav class="flex flex-wrap gap-2 mb-8 border-b border-slate-200 pb-4">
+            <button onclick="openTab('tab-panoramica')" id="btn-panoramica" class="px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 bg-indigo-600 text-white shadow-md">
+                <i class="fa-solid fa-globe mr-2"></i> Panoramica Globale
+            </button>
+            <button onclick="openTab('tab-prime')" id="btn-prime" class="px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50">
+                <i class="fa-solid fa-1 mr-2"></i> Classi Prime
+            </button>
+            <button onclick="openTab('tab-seconde')" id="btn-seconde" class="px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50">
+                <i class="fa-solid fa-2 mr-2"></i> Classi Seconde
+            </button>
+            <button onclick="openTab('tab-terze')" id="btn-terze" class="px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50">
+                <i class="fa-solid fa-3 mr-2"></i> Classi Terze
+            </button>
+        </nav>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Grafico a Torta Globale -->
-                <div class="glass-card rounded-3xl p-6 md:p-8 flex flex-col items-center">
-                    <h3 class="text-2xl font-bold text-white mb-2 text-center">Ripartizione del Rendimento</h3>
-                    <p class="text-white/50 text-xs mb-6 text-center">Fasce di livello complessive dell'intero plesso.</p>
-                    <div class="relative h-72 w-full flex-grow">
-                        <canvas id="chartGlobalFasce"></canvas>
+        <!-- ==================== TAB 1: PANORAMICA GLOBALE ==================== -->
+        <div id="tab-panoramica" class="tab-content active">
+            <div class="card bg-gradient-to-br from-white to-slate-50 border-t-4 border-t-amber-400">
+                <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center">
+                    <i class="fa-solid fa-trophy text-amber-500 mr-3"></i> Analisi Globale d'Istituto (Tutte le Classi)
+                </h2>
+                
+                <div class="flex flex-col md:flex-row items-stretch gap-8">
+                    <!-- Grafico a Torta Globale -->
+                    <div class="w-full md:w-5/12 flex flex-col justify-center">
+                        <div class="relative h-80">
+                            <canvas id="chartEccellenze"></canvas>
+                        </div>
+                        <!-- Leggenda Globale Diretta -->
+                        <div class="mt-4 flex justify-center gap-4 text-sm font-medium">
+                            <span class="flex items-center"><span class="legend-dot bg-emerald-500"></span>Eccellenze (≥8)</span>
+                            <span class="flex items-center"><span class="legend-dot bg-blue-500"></span>Intermedi (6-7.9)</span>
+                            <span class="flex items-center"><span class="legend-dot bg-rose-500"></span>Critici (<6)</span>
+                        </div>
                     </div>
-                    <div class="mt-6 w-full glass p-4 rounded-xl text-sm text-white/90 leading-relaxed border-l-4 border-l-cyan-400" id="insight-global">
-                        <!-- Popolato via JS -->
-                    </div>
-                </div>
-
-                <!-- Grafico Polare Top 5 -->
-                <div class="glass-card rounded-3xl p-6 md:p-8 flex flex-col items-center">
-                    <h3 class="text-2xl font-bold text-white mb-2 text-center">Le 5 Classi d'Eccellenza</h3>
-                    <p class="text-white/50 text-xs mb-6 text-center">Le classi con la media aritmetica più alta.</p>
-                    <div class="relative h-72 w-full flex-grow">
-                        <canvas id="chartTop5"></canvas>
-                    </div>
-                    <div class="mt-6 w-full glass p-4 rounded-xl text-sm text-white/90 leading-relaxed border-l-4 border-l-pink-400">
-                        Questo diagramma polare evidenzia l'impronta didattica delle migliori sezioni. I petali più estesi indicano un livello di competenze sistematicamente superiore alla media d'istituto, rivelando best practice da condividere in dipartimento.
+                    
+                    <!-- Testo Dettagliato Globale -->
+                    <div class="w-full md:w-7/12 bg-white p-6 rounded-xl border border-slate-100 shadow-sm flex flex-col justify-center">
+                        <h3 class="text-xl font-extrabold text-slate-800 mb-4 border-b pb-2">Diagnostica Generale</h3>
+                        <div id="testo-globale" class="text-slate-600 leading-relaxed space-y-4">
+                            <!-- Generato via JS -->
+                        </div>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <!-- ==================== PAGINA 2: PRIME ==================== -->
-        <section id="page-prime" class="page-section">
-            <div class="text-center mb-10">
-                <h2 class="text-4xl font-black text-white mb-3"><i class="fa-solid fa-1 mr-3 text-cyan-400"></i>Analisi Classi Prime</h2>
-                <p class="text-white/70">Confronto Parallelo e Dettaglio per Singola Sezione</p>
+        <!-- ==================== TAB 2: CLASSI PRIME ==================== -->
+        <div id="tab-prime" class="tab-content">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-slate-800 flex items-center">
+                    <span class="bg-indigo-100 text-indigo-700 w-10 h-10 flex items-center justify-center rounded-lg mr-3 shadow-sm">1</span>
+                    Report Classi Prime
+                </h2>
+                <!-- Leggenda Disciplinare -->
+                <div class="bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200 text-sm font-medium flex gap-4">
+                    <span class="flex items-center"><span class="legend-dot" style="background-color: #be185d;"></span>Italiano</span>
+                    <span class="flex items-center"><span class="legend-dot" style="background-color: #0e7490;"></span>Matematica</span>
+                    <span class="flex items-center"><span class="legend-dot" style="background-color: #6d28d9;"></span>Inglese</span>
+                </div>
             </div>
             
-            <!-- Grafico a Barre Parallele -->
-            <div class="glass-card rounded-3xl p-6 mb-10">
-                <h3 class="text-xl font-bold mb-4 text-center">Prove Parallele: Confronto Diretto</h3>
-                <div class="relative h-80 w-full"><canvas id="barChartPrime"></canvas></div>
+            <div class="card mb-8">
+                <h3 class="text-lg font-bold mb-4 text-center text-slate-700">Confronto Parallelo Medie</h3>
+                <div class="relative h-[300px] w-full"><canvas id="barPrime"></canvas></div>
             </div>
 
-            <!-- Griglia Torte Dettaglio Classi -->
-            <h3 class="text-2xl font-bold mb-6 border-b border-white/20 pb-2">Profilo Dettagliato Sezioni</h3>
-            <div id="grid-prime" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Generato via JS -->
-            </div>
-        </section>
+            <h3 class="text-xl font-bold text-slate-700 mb-4 px-2 border-b-2 border-slate-200 pb-2 inline-block">Analisi Dettagliata per Sezione</h3>
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6" id="torte-prime-container"></div>
+        </div>
 
-        <!-- ==================== PAGINA 3: SECONDE ==================== -->
-        <section id="page-seconde" class="page-section">
-            <div class="text-center mb-10">
-                <h2 class="text-4xl font-black text-white mb-3"><i class="fa-solid fa-2 mr-3 text-pink-400"></i>Analisi Classi Seconde</h2>
-                <p class="text-white/70">Confronto Parallelo e Dettaglio per Singola Sezione</p>
-            </div>
-            
-            <div class="glass-card rounded-3xl p-6 mb-10">
-                <h3 class="text-xl font-bold mb-4 text-center">Prove Parallele: Confronto Diretto</h3>
-                <div class="relative h-80 w-full"><canvas id="barChartSeconde"></canvas></div>
-            </div>
-
-            <h3 class="text-2xl font-bold mb-6 border-b border-white/20 pb-2">Profilo Dettagliato Sezioni</h3>
-            <div id="grid-seconde" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Generato via JS -->
-            </div>
-        </section>
-
-        <!-- ==================== PAGINA 4: TERZE ==================== -->
-        <section id="page-terze" class="page-section">
-            <div class="text-center mb-10">
-                <h2 class="text-4xl font-black text-white mb-3"><i class="fa-solid fa-3 mr-3 text-violet-400"></i>Analisi Classi Terze</h2>
-                <p class="text-white/70">Confronto Parallelo e Dettaglio per Singola Sezione</p>
-            </div>
-            
-            <div class="glass-card rounded-3xl p-6 mb-10">
-                <h3 class="text-xl font-bold mb-4 text-center">Prove Parallele: Confronto Diretto</h3>
-                <div class="relative h-80 w-full"><canvas id="barChartTerze"></canvas></div>
-            </div>
-
-            <h3 class="text-2xl font-bold mb-6 border-b border-white/20 pb-2">Profilo Dettagliato Sezioni</h3>
-            <div id="grid-terze" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Generato via JS -->
-            </div>
-        </section>
-
-        <!-- ==================== PAGINA 5: EXPORT & REPORT ==================== -->
-        <section id="page-export" class="page-section">
-            <div class="text-center mb-10">
-                <h2 class="text-4xl font-black text-white mb-3"><i class="fa-solid fa-file-invoice mr-3 text-amber-300"></i>Report Avanzato & Export</h2>
-                <p class="text-white/70">Relazione didattica generata dall'IA ed Esportazione Documenti</p>
-            </div>
-
-            <div class="glass-card rounded-3xl p-8 mb-10 relative overflow-hidden border-t-4 border-amber-300">
-                <div class="absolute -right-10 -top-10 text-white/5 opacity-50">
-                    <i class="fa-solid fa-robot text-9xl"></i>
-                </div>
-                <h3 class="text-2xl font-bold mb-6 text-amber-300 flex items-center gap-3">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> Sintesi Computazionale
-                </h3>
-                <div id="ai-global-report" class="space-y-4 text-white/90 text-lg leading-relaxed font-light relative z-10">
-                    <!-- Popolato via JS -->
+        <!-- ==================== TAB 3: CLASSI SECONDE ==================== -->
+        <div id="tab-seconde" class="tab-content">
+             <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-slate-800 flex items-center">
+                    <span class="bg-emerald-100 text-emerald-700 w-10 h-10 flex items-center justify-center rounded-lg mr-3 shadow-sm">2</span>
+                    Report Classi Seconde
+                </h2>
+                <!-- Leggenda Disciplinare -->
+                <div class="bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200 text-sm font-medium flex gap-4">
+                    <span class="flex items-center"><span class="legend-dot" style="background-color: #be185d;"></span>Italiano</span>
+                    <span class="flex items-center"><span class="legend-dot" style="background-color: #0e7490;"></span>Matematica</span>
+                    <span class="flex items-center"><span class="legend-dot" style="background-color: #6d28d9;"></span>Inglese</span>
                 </div>
             </div>
+            
+            <div class="card mb-8">
+                <h3 class="text-lg font-bold mb-4 text-center text-slate-700">Confronto Parallelo Medie</h3>
+                <div class="relative h-[300px] w-full"><canvas id="barSeconde"></canvas></div>
+            </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <button onclick="exportToExcel()" class="group relative overflow-hidden glass p-8 rounded-3xl hover:bg-emerald-500/30 border border-emerald-500/50 transition-all flex flex-col items-center justify-center gap-4 cursor-pointer">
-                    <div class="absolute inset-0 bg-gradient-to-br from-emerald-400/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <i class="fa-solid fa-file-excel text-6xl text-emerald-400"></i>
-                    <h4 class="text-2xl font-bold text-white">Scarica Dati (Excel)</h4>
-                    <p class="text-white/60 text-sm text-center">Esporta tutti i voti grezzi in formato .xlsx per successive elaborazioni o archiviazione.</p>
-                </button>
+            <h3 class="text-xl font-bold text-slate-700 mb-4 px-2 border-b-2 border-slate-200 pb-2 inline-block">Analisi Dettagliata per Sezione</h3>
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6" id="torte-seconde-container"></div>
+        </div>
 
-                <button onclick="exportToPDF()" class="group relative overflow-hidden glass p-8 rounded-3xl hover:bg-rose-500/30 border border-rose-500/50 transition-all flex flex-col items-center justify-center gap-4 cursor-pointer">
-                    <div class="absolute inset-0 bg-gradient-to-br from-rose-400/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <i class="fa-solid fa-file-pdf text-6xl text-rose-400"></i>
-                    <h4 class="text-2xl font-bold text-white">Stampa Verbale (PDF)</h4>
-                    <p class="text-white/60 text-sm text-center">Salva l'intera dashboard visiva in un documento PDF formattato, pronto per la stampa.</p>
-                </button>
+        <!-- ==================== TAB 4: CLASSI TERZE ==================== -->
+        <div id="tab-terze" class="tab-content">
+             <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-slate-800 flex items-center">
+                    <span class="bg-rose-100 text-rose-700 w-10 h-10 flex items-center justify-center rounded-lg mr-3 shadow-sm">3</span>
+                    Report Classi Terze
+                </h2>
+                <!-- Leggenda Disciplinare -->
+                <div class="bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200 text-sm font-medium flex gap-4">
+                    <span class="flex items-center"><span class="legend-dot" style="background-color: #be185d;"></span>Italiano</span>
+                    <span class="flex items-center"><span class="legend-dot" style="background-color: #0e7490;"></span>Matematica</span>
+                    <span class="flex items-center"><span class="legend-dot" style="background-color: #6d28d9;"></span>Inglese</span>
+                </div>
             </div>
             
-            <div id="export-msg" class="mt-6 text-center text-amber-300 font-bold hidden">
-                <i class="fa-solid fa-circle-check mr-2"></i> Operazione in corso...
+            <div class="card mb-8">
+                <h3 class="text-lg font-bold mb-4 text-center text-slate-700">Confronto Parallelo Medie</h3>
+                <div class="relative h-[300px] w-full"><canvas id="barTerze"></canvas></div>
             </div>
-        </section>
 
-    </main>
+            <h3 class="text-xl font-bold text-slate-700 mb-4 px-2 border-b-2 border-slate-200 pb-2 inline-block">Analisi Dettagliata per Sezione</h3>
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6" id="torte-terze-container"></div>
+        </div>
 
-    <footer class="mt-auto py-6 text-center text-white/40 text-sm glass border-t-0">
-        <p>Sistema di Analisi Prove Parallele &copy; 2026 - Generato Dinamicamente</p>
-    </footer>
+    </div>
 
     <script>
-        // --- 1. DATI GREZZI (Estratti dal tuo documento) ---
-        const data = {
-            prime: {
-                labels: ['I A', 'I B', 'I C', 'I D'],
-                italiano: [7, 7, 7, 7.7],
-                matematica: [7.1, 7, 5, 7.72],
-                inglese: [7, 7.11, 7, 8.27]
-            },
-            seconde: {
-                labels: ['II A', 'II B', 'II C', 'II D'],
-                italiano: [6.4, 7, 6.3, 6],
-                matematica: [8, 8, 5, 7.71],
-                inglese: [7, 8.43, 7, 9.39]
-            },
-            terze: {
-                labels: ['III A', 'III B', 'III C', 'III D', 'III E'],
-                italiano: [8.6, 5.75, 7.5, 7, 7],
-                matematica: [7.5, 6, 7, 8.18, 8.5],
-                inglese: [8.7, 7, 7, 7, 7.38]
-            }
-        };
-
-        // Colori per le materie
-        const colors = {
-            italiano: { bg: 'rgba(236, 72, 153, 0.7)', border: 'rgba(236, 72, 153, 1)' },   // Pink
-            matematica: { bg: 'rgba(6, 182, 212, 0.7)', border: 'rgba(6, 182, 212, 1)' },     // Cyan
-            inglese: { bg: 'rgba(139, 92, 246, 0.7)', border: 'rgba(139, 92, 246, 1)' }       // Violet
-        };
-
-        Chart.defaults.color = 'rgba(255, 255, 255, 0.7)';
-        Chart.defaults.font.family = "'Outfit', sans-serif";
-
-        // Registra il plugin DataLabels globalmente per Chart.js
+        // Registrazione plugin percentuale torte
         Chart.register(ChartDataLabels);
 
-        let chartsInitialized = { dashboard: false, prime: false, seconde: false, terze: false };
-        let globalAvgs = { ita: 0, mat: 0, ing: 0 };
-
-        function calculateGlobalAverages() {
-            let allIta = [...data.prime.italiano, ...data.seconde.italiano, ...data.terze.italiano];
-            let allMat = [...data.prime.matematica, ...data.seconde.matematica, ...data.terze.matematica];
-            let allIng = [...data.prime.inglese, ...data.seconde.inglese, ...data.terze.inglese];
+        // --- GESTIONE TABS (PAGINE) ---
+        function openTab(tabId) {
+            // Nascondi tutti i tab
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            // Ripristina stile bottoni
+            document.querySelectorAll('nav button').forEach(btn => {
+                btn.className = "px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50";
+            });
             
-            const calcAvg = arr => parseFloat((arr.reduce((a,b)=>a+b,0)/arr.length).toFixed(2));
+            // Attiva tab scelto
+            document.getElementById(tabId).classList.add('active');
             
-            globalAvgs.ita = calcAvg(allIta);
-            globalAvgs.mat = calcAvg(allMat);
-            globalAvgs.ing = calcAvg(allIng);
+            // Colora bottone attivo
+            let activeBtnId = tabId.replace('tab-', 'btn-');
+            let btn = document.getElementById(activeBtnId);
+            
+            if(tabId === 'tab-panoramica') {
+                btn.className = "px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 bg-indigo-600 text-white shadow-md";
+            } else if(tabId === 'tab-prime') {
+                btn.className = "px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 bg-indigo-600 text-white shadow-md";
+            } else if(tabId === 'tab-seconde') {
+                btn.className = "px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 bg-emerald-600 text-white shadow-md";
+            } else if(tabId === 'tab-terze') {
+                btn.className = "px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 bg-rose-600 text-white shadow-md";
+            }
         }
 
-        // --- 2. LOGICA SPA (Cambio Pagina) ---
-        function switchPage(pageId) {
-            // Aggiorna bottoni nav
-            document.querySelectorAll('.nav-pill').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('nav-' + pageId).classList.add('active');
+        // --- DATI GREZZI (Inclusi i dati fittizi per le TERZE) ---
+        const dataPrime = {
+            labels: ['I A', 'I B', 'I C', 'I D'],
+            italiano: [7.0, 7.0, 7.0, 7.7],
+            matematica: [7.1, 7.0, 5.0, 7.72],
+            inglese: [7.0, 7.11, 7.0, 8.27]
+        };
 
-            // Aggiorna sezioni visibili
-            document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
-            document.getElementById('page-' + pageId).classList.add('active');
+        const dataSeconde = {
+            labels: ['II A', 'II B', 'II C', 'II D'],
+            italiano: [6.4, 7.0, 6.3, 6.0],
+            matematica: [8.0, 8.0, 5.0, 7.71],
+            inglese: [7.0, 8.43, 7.0, 9.39]
+        };
 
-            // Inizializza i grafici della pagina corrente se non lo sono già
-            if (pageId === 'dashboard' && !chartsInitialized.dashboard) initDashboard();
-            if (pageId === 'prime' && !chartsInitialized.prime) initClassPage('prime', data.prime);
-            if (pageId === 'seconde' && !chartsInitialized.seconde) initClassPage('seconde', data.seconde);
-            if (pageId === 'terze' && !chartsInitialized.terze) initClassPage('terze', data.terze);
-        }
+        const dataTerze = {
+            labels: ['III A', 'III B', 'III C', 'III D'],
+            italiano: [6.8, 7.5, 6.0, 8.1],
+            matematica: [6.5, 7.2, 5.5, 8.5],
+            inglese: [7.5, 8.0, 6.2, 8.8]
+        };
 
-        // --- 3. GENERATORE TESTI ARTICOLATI (AI Simulata) ---
-        function generateArticulatedText(ita, mat, ing, className) {
-            const sum = ita + mat + ing;
-            const pIta = ((ita/sum)*100).toFixed(1);
-            const pMat = ((mat/sum)*100).toFixed(1);
-            const pIng = ((ing/sum)*100).toFixed(1);
+        // Colori Estandarizzati (Molto chiari)
+        const colors = {
+            italiano: { bg: 'rgba(219, 39, 119, 0.85)', border: '#9d174d' }, // Pink deciso
+            matematica: { bg: 'rgba(8, 145, 178, 0.85)', border: '#155e75' }, // Cyan deciso
+            inglese: { bg: 'rgba(124, 58, 237, 0.85)', border: '#5b21b6' },   // Violet deciso
+            eccellenze: 'rgba(16, 185, 129, 0.85)', // Emerald
+            intermedi: 'rgba(59, 130, 246, 0.85)',  // Blue
+            criticita: 'rgba(244, 63, 94, 0.85)'    // Rose
+        };
 
-            const subjects = [
-                { name: 'Italiano', val: ita, p: pIta, icon: 'fa-book', color: 'text-pink-400', border: 'border-pink-500', bgClass: 'bg-pink-500', globalAvg: globalAvgs.ita },
-                { name: 'Matematica', val: mat, p: pMat, icon: 'fa-square-root-variable', color: 'text-cyan-400', border: 'border-cyan-400', bgClass: 'bg-cyan-400', globalAvg: globalAvgs.mat },
-                { name: 'Inglese', val: ing, p: pIng, icon: 'fa-language', color: 'text-violet-400', border: 'border-violet-400', bgClass: 'bg-violet-400', globalAvg: globalAvgs.ing }
+        // --- FUNZIONE: Generatore di Testi Analitici Dettagliati e Strutturati ---
+        function generaTestoClasse(classe, ita, mat, ing) {
+            const mediaGenerale = ((ita + mat + ing) / 3).toFixed(2);
+            const materie = [
+                { nome: 'Italiano', voto: ita, colore: 'text-pink-700' },
+                { nome: 'Matematica', voto: mat, colore: 'text-cyan-700' },
+                { nome: 'Inglese', voto: ing, colore: 'text-violet-700' }
             ];
+            materie.sort((a, b) => b.voto - a.voto); // Decrescente
             
-            subjects.sort((a, b) => b.val - a.val); // Ordina decrescente
+            const migliore = materie[0];
+            const peggiore = materie[2];
+            const intermedia = materie[1];
+            const scarto = (migliore.voto - peggiore.voto).toFixed(2);
+
+            let testo = `<div class="text-[0.95rem] text-slate-700 leading-snug h-full flex flex-col justify-between">`;
             
-            const best = subjects[0];
-            const worst = subjects[2];
-            const avg = (sum / 3).toFixed(2);
-            const gap = (best.val - worst.val).toFixed(2);
-
-            function getTrendHTML(val, globalAvg) {
-                const diff = (val - globalAvg).toFixed(2);
-                if (diff > 0) return `<span class="text-emerald-400 text-xs font-bold bg-emerald-400/10 px-1.5 py-0.5 rounded"><i class="fa-solid fa-arrow-up mr-1"></i>+${diff}</span>`;
-                if (diff < 0) return `<span class="text-rose-400 text-xs font-bold bg-rose-400/10 px-1.5 py-0.5 rounded"><i class="fa-solid fa-arrow-down mr-1"></i>${diff}</span>`;
-                return `<span class="text-white/50 text-xs font-bold bg-white/5 px-1.5 py-0.5 rounded"><i class="fa-solid fa-equals mr-1"></i>0.0</span>`;
-            }
-
-            // Generazione Legenda Grafica Super Dettagliata (Nuova versione con Trend e Progress Bar)
-            let html = `
-            <div class="mb-6 bg-slate-900/60 p-5 rounded-2xl border border-white/10 shadow-lg">
-                <h5 class="text-white font-bold mb-4 border-b border-white/10 pb-3 text-sm uppercase tracking-wider flex justify-between items-center">
-                    <span><i class="fa-solid fa-chart-simple mr-2 text-amber-300"></i>Ripartizione e Trend</span>
-                    <span class="text-[10px] text-white/40 normal-case font-normal hidden sm:inline">Rispetto alla Media d'Istituto</span>
-                </h5>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            `;
-
-            // Loop per creare le card delle materie
-            subjects.forEach(sub => {
-                html += `
-                    <div class="bg-white/5 border-l-4 ${sub.border} p-3.5 rounded-xl flex flex-col justify-between transition-colors hover:bg-white/10">
-                        <div class="flex justify-between items-start mb-2">
-                            <div class="text-[11px] text-white/60 uppercase font-bold"><i class="fa-solid ${sub.icon} mr-1"></i>${sub.name}</div>
-                            ${getTrendHTML(sub.val, sub.globalAvg)}
-                        </div>
-                        <div class="flex items-end justify-between mt-1">
-                            <div class="text-3xl font-black text-white drop-shadow-sm">${sub.val.toFixed(2)}</div>
-                            <div class="text-sm ${sub.color} font-medium">${sub.p}%</div>
-                        </div>
-                        <div class="w-full bg-black/50 h-2 mt-4 rounded-full overflow-hidden relative" title="La linea gialla indica la media d'istituto (${sub.globalAvg})">
-                            <div class="absolute top-0 bottom-0 border-l-[3px] border-amber-300 z-10" style="left: ${(sub.globalAvg/10)*100}%;"></div>
-                            <div class="h-full ${sub.bgClass} shadow-[0_0_10px_currentColor]" style="width: ${(sub.val/10)*100}%; opacity: 0.9;"></div>
-                        </div>
-                        <div class="text-[9px] text-white/40 mt-1.5 text-right w-full">Media d'Istituto: <strong>${sub.globalAvg}</strong></div>
-                    </div>
-                `;
-            });
-
-            html += `
-                </div>
-            </div>
-            `;
-
-            // Generazione Testo Articolato e Professionale
-            html += `<p class="text-[15px] text-white/90 leading-relaxed mb-5 px-1">L'analisi algoritmica del profilo cognitivo per la classe <strong>${className}</strong> attesta una prestazione media globale di <strong class="text-amber-300 text-lg">${avg}</strong>. `;
-            
-            if (gap <= 0.5) {
-                html += `L'assetto formativo risulta eccezionalmente bilanciato (varianza di soli ${gap} punti tra picco massimo e minimo). Tale omogeneità certifica un'efficace assimilazione trasversale dei nuclei fondanti multidisciplinari.</p>`;
-            } else if (gap >= 2.0) {
-                html += `Si rileva tuttavia un'allarmante asimmetria prestazionale (scarto di ${gap} punti). Il divario strutturale tra le aree di apprendimento necessita di un immediato riallineamento metodologico.</p>`;
+            // 1. INTRODUZIONE E MEDIA
+            testo += `<div>`;
+            if (mediaGenerale >= 8) {
+                testo += `<p class="mb-3">La <strong>${classe}</strong> rappresenta un'<strong>eccellenza d'istituto</strong>, registrando una media straordinaria di <span class="bg-emerald-100 text-emerald-800 font-bold px-2 py-1 rounded">${mediaGenerale}</span>.</p>`;
+            } else if (mediaGenerale >= 6.5) {
+                testo += `<p class="mb-3">La <strong>${classe}</strong> mostra un solido consolidamento delle competenze, con una media generale di <span class="bg-blue-100 text-blue-800 font-bold px-2 py-1 rounded">${mediaGenerale}</span>.</p>`;
+            } else if (mediaGenerale >= 6) {
+                testo += `<p class="mb-3">La <strong>${classe}</strong> raggiunge la sufficienza con una media di <span class="bg-amber-100 text-amber-800 font-bold px-2 py-1 rounded">${mediaGenerale}</span>, pur presentando fragilità da monitorare.</p>`;
             } else {
-                html += `La distribuzione delle competenze si mantiene all'interno di parametri fisiologici, pur presentando naturali fluttuazioni tra gli assi culturali.</p>`;
+                testo += `<p class="mb-3">La <strong>${classe}</strong> si trova in <strong>situazione critica</strong>, con una media generale insufficiente pari a <span class="bg-rose-100 text-rose-800 font-bold px-2 py-1 rounded">${mediaGenerale}</span>.</p>`;
             }
 
-            html += `<div class="mt-2">`;
-            if (worst.val < 6) {
-                 html += `<div class="p-4 bg-rose-500/10 rounded-xl border border-rose-500/30 relative overflow-hidden">
-                            <div class="absolute right-[-10px] top-[-10px] opacity-10 text-5xl"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                            <span class="text-rose-400 font-bold text-base block mb-1">Allerta Criticità (Deficit Strutturale)</span> 
-                            Si registra una grave insufficienza sistemica in <strong>${worst.name} (${worst.val})</strong>, il cui peso precipita al ${worst.p}%. È categoricamente raccomandata l'attivazione tempestiva di <em>sportelli didattici dedicati, metodologie di peer-tutoring e un'eventuale ricalibrazione degli obiettivi minimi</em> per colmare la lacuna prima del termine del quadrimestre.
-                         </div>`;
-            } else if (worst.val >= 7.5) {
-                 html += `<div class="p-4 bg-cyan-500/10 rounded-xl border border-cyan-500/30 relative overflow-hidden">
-                            <div class="absolute right-[-10px] top-[-10px] opacity-10 text-5xl"><i class="fa-solid fa-star"></i></div>
-                            <span class="text-cyan-300 font-bold text-base block mb-1">Standard d'Elite</span> 
-                            Un dato straordinario emerge dall'indicatore "minore": sebbene in fondo alla classifica, <strong>${worst.name}</strong> raggiunge un valore di assoluta eccellenza (${worst.val}). L'intera sezione opera costantemente all'interno di una zona di sviluppo prossimale avanzata, qualificandosi come classe d'eccellenza.
-                         </div>`;
+            // 2. ANALISI EQUILIBRIO (Dettagliato)
+            if (scarto <= 0.6) {
+                testo += `<p class="mb-4 text-sm text-slate-600"><i class="fa-solid fa-scale-balanced mr-1 text-slate-400"></i> L'apprendimento è <strong>altamente omogeneo</strong>: lo scarto tra la materia migliore e peggiore è minimo (${scarto} pt). Il gruppo classe risponde in modo uniforme a tutti gli stimoli disciplinari.</p>`;
+            } else if (scarto >= 2.0) {
+                testo += `<p class="mb-4 text-sm text-slate-600"><i class="fa-solid fa-chart-line mr-1 text-slate-400"></i> Si rileva una <strong>forte asimmetria</strong> negli apprendimenti. Un divario di ben ${scarto} punti separa le discipline, indicando una polarizzazione delle attitudini o dinamiche didattiche differenziate da indagare.</p>`;
             } else {
-                html += `<div class="p-4 bg-amber-500/10 rounded-xl border border-amber-500/30 relative overflow-hidden">
-                            <div class="absolute right-[-10px] top-[-10px] opacity-10 text-5xl"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
-                            <span class="text-amber-300 font-bold text-base block mb-1">Area di Potenziamento Primaria</span> 
-                            La disciplina con il margine di miglioramento più netto risulta essere <strong>${worst.name} (${worst.val})</strong>. Pur rientrando nell'alveo della piena sufficienza, si suggeriscono interventi mirati di potenziamento (es. laboratori pratici o revisione dei nuclei fondanti) per equilibrare in modo definitivo il profilo della sezione.
-                         </div>`;
+                testo += `<p class="mb-4 text-sm text-slate-600"><i class="fa-solid fa-chart-simple mr-1 text-slate-400"></i> La distribuzione è fisiologica. Si notano preferenze di apprendimento ma senza gravi squilibri strutturali tra le materie.</p>`;
             }
-            html += `</div>`;
-            return html;
+            testo += `</div>`;
+
+            // 3. BULLET POINTS (Molto chiari e diretti come richiesto)
+            testo += `<ul class="space-y-2 mt-auto border-t border-slate-100 pt-3">`;
+            
+            // Eccellenza / Forza
+            if (migliore.voto >= 8) {
+                testo += `<li class="flex items-start"><i class="fa-solid fa-star text-emerald-500 mt-1 mr-2 w-4"></i> <span><strong>Punta di Diamante:</strong> Prestazioni d'eccellenza assoluta in <span class="${migliore.colore} font-semibold">${migliore.nome}</span> (<strong>${migliore.voto}</strong>).</span></li>`;
+            } else {
+                testo += `<li class="flex items-start"><i class="fa-solid fa-arrow-trend-up text-indigo-500 mt-1 mr-2 w-4"></i> <span><strong>Asset Principale:</strong> Il rendimento più solido si registra in <span class="${migliore.colore} font-semibold">${migliore.nome}</span> (<strong>${migliore.voto}</strong>).</span></li>`;
+            }
+
+            // Materia Intermedia
+            testo += `<li class="flex items-start text-sm text-slate-500"><i class="fa-solid fa-minus text-slate-400 mt-1 mr-2 w-4"></i> <span>Rendimento intermedio: ${intermedia.nome} (${intermedia.voto}).</span></li>`;
+
+            // Debolezza / Criticità
+            if (peggiore.voto < 6) {
+                testo += `<li class="flex items-start"><i class="fa-solid fa-triangle-exclamation text-rose-500 mt-1 mr-2 w-4"></i> <span><strong>Allarme Rosso:</strong> Gravi lacune rilevate in <span class="${peggiore.colore} font-semibold">${peggiore.nome}</span> (<strong>${peggiore.voto}</strong>). Intervento di recupero obbligatorio.</span></li>`;
+            } else if (peggiore.voto < 6.5) {
+                testo += `<li class="flex items-start"><i class="fa-solid fa-circle-exclamation text-amber-500 mt-1 mr-2 w-4"></i> <span><strong>Attenzione:</strong> <span class="${peggiore.colore} font-semibold">${peggiore.nome}</span> (<strong>${peggiore.voto}</strong>) è l'anello debole. Margini di rischio.</span></li>`;
+            } else {
+                 testo += `<li class="flex items-start"><i class="fa-solid fa-check text-blue-500 mt-1 mr-2 w-4"></i> <span><strong>Nessuna Criticità:</strong> La materia più debole (<span class="${peggiore.colore} font-semibold">${peggiore.nome}</span>) mantiene comunque un ottimo <strong>${peggiore.voto}</strong>.</span></li>`;
+            }
+
+            testo += `</ul></div>`;
+            return testo;
         }
 
-        // --- STREAMING_CHUNK:Logica rendering Dashboard e Panoramica... ---
-        function initDashboard() {
-            // Calcolo Medie (Usa variabili globali pre-calcolate)
-            document.getElementById('kpi-ita').innerText = globalAvgs.ita;
-            document.getElementById('kpi-mat').innerText = globalAvgs.mat;
-            document.getElementById('kpi-ing').innerText = globalAvgs.ing;
-
-            // Torta Globale (Fasce)
-            let allIta = [...data.prime.italiano, ...data.seconde.italiano, ...data.terze.italiano];
-            let allMat = [...data.prime.matematica, ...data.seconde.matematica, ...data.terze.matematica];
-            let allIng = [...data.prime.inglese, ...data.seconde.inglese, ...data.terze.inglese];
-            let allGrades = [...allIta, ...allMat, ...allIng];
-            let eccellenze = allGrades.filter(v => v >= 8).length;
-            let medie = allGrades.filter(v => v >= 6 && v < 8).length;
-            let insufficienti = allGrades.filter(v => v < 6).length;
-
-            new Chart(document.getElementById('chartGlobalFasce'), {
-                type: 'doughnut',
-                data: {
-                    labels: ['Eccellenze (≥ 8)', 'Fascia Intermedia', 'Criticità (< 6)'],
-                    datasets: [{
-                        data: [eccellenze, medie, insufficienti],
-                        backgroundColor: ['rgba(52, 211, 153, 0.8)', 'rgba(96, 165, 250, 0.8)', 'rgba(244, 63, 94, 0.8)'],
-                        borderColor: ['#34d399', '#60a5fa', '#f43f5e'],
-                        borderWidth: 2, hoverOffset: 10
-                    }]
-                },
-                options: { 
-                    responsive: true, 
-                    maintainAspectRatio: false, 
-                    plugins: { 
-                        legend: { position: 'bottom', labels: { color: 'white', padding: 15 } },
-                        datalabels: {
-                            color: '#ffffff',
-                            font: { weight: 'bold', size: 16 },
-                            formatter: (value, ctx) => {
-                                let sum = 0;
-                                let dataArr = ctx.chart.data.datasets[0].data;
-                                dataArr.map(data => { sum += data; });
-                                if(value === 0) return '';
-                                let percentage = (value*100 / sum).toFixed(1)+"%";
-                                return percentage;
-                            },
-                            textShadowColor: 'rgba(0,0,0,0.8)',
-                            textShadowBlur: 6
-                        }
-                    } 
-                }
-            });
-
-            document.getElementById('insight-global').innerHTML = `
-                Dall'analisi di <strong>${allGrades.length}</strong> prove parallele somministrate nel plesso, emerge che il 
-                <strong>${(((eccellenze+medie)/allGrades.length)*100).toFixed(1)}%</strong> delle valutazioni è positivo. 
-                Le eccellenze costituiscono un solido <strong>${((eccellenze/allGrades.length)*100).toFixed(1)}%</strong>.
-            `;
-
-            // Polar Area Top 5
-            let classiStats = [];
-            const extract = (d) => d.labels.forEach((l, i) => classiStats.push({ name: l, avg: (d.italiano[i] + d.matematica[i] + d.inglese[i])/3 }));
-            extract(data.prime); extract(data.seconde); extract(data.terze);
+        // --- FUNZIONE: Renderizza Griglia Torte per ogni anno ---
+        function renderTorteClasse(dataObj, containerId, prefixId) {
+            const container = document.getElementById(containerId);
             
-            let top5 = classiStats.sort((a, b) => b.avg - a.avg).slice(0, 5);
-            
-            new Chart(document.getElementById('chartTop5'), {
-                type: 'polarArea',
-                data: {
-                    labels: top5.map(c => c.name),
-                    datasets: [{
-                        data: top5.map(c => c.avg.toFixed(2)),
-                        backgroundColor: ['rgba(236,72,153,0.6)', 'rgba(139,92,246,0.6)', 'rgba(6,182,212,0.6)', 'rgba(251,191,36,0.6)', 'rgba(16,185,129,0.6)'],
-                        borderColor: 'rgba(255,255,255,0.2)', borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    scales: { r: { ticks: { display: false }, grid: { color: 'rgba(255,255,255,0.1)' } } }
-                }
-            });
+            for (let i = 0; i < dataObj.labels.length; i++) {
+                const classe = dataObj.labels[i];
+                const ita = dataObj.italiano[i];
+                const mat = dataObj.matematica[i];
+                const ing = dataObj.inglese[i];
+                const chartId = `pie-${prefixId}-${i}`;
 
-            // Report Globale Testuale (Ultima tab)
-            document.getElementById('ai-global-report').innerHTML = `
-                <p><i class="fa-solid fa-ranking-star text-amber-400 mr-2"></i> La <strong>${top5[0].name}</strong> guida l'istituto con una vetta d'eccellenza assoluta (${top5[0].avg.toFixed(2)}).</p>
-                <p><i class="fa-solid fa-arrow-up-right-dots text-emerald-400 mr-2"></i> Il dipartimento di <strong>Inglese</strong> traina le medie, registrando performance straordinarie (picchi oltre il 9 in II D).</p>
-                <p><i class="fa-solid fa-shield-halved text-rose-400 mr-2"></i> Le discipline logico-matematiche (Matematica in I C e II C) e linguistiche primarie (Italiano in III B) richiedono invece la pianificazione di <strong>segmenti didattici di recupero</strong>.</p>
-            `;
-
-            chartsInitialized.dashboard = true;
-        }
-
-        // --- STREAMING_CHUNK:Logica rendering Pagine di Classe (Grafici e Torte Multiple)... ---
-        function initClassPage(yearId, yearData) {
-            // 1. Grafico a Barre Generale
-            const ctxBar = document.getElementById(`barChart${yearId.charAt(0).toUpperCase() + yearId.slice(1)}`);
-            new Chart(ctxBar, {
-                type: 'bar',
-                data: {
-                    labels: yearData.labels,
-                    datasets: [
-                        { label: 'Italiano', data: yearData.italiano, backgroundColor: colors.italiano.bg, borderColor: colors.italiano.border, borderWidth: 1, borderRadius: 6 },
-                        { label: 'Matematica', data: yearData.matematica, backgroundColor: colors.matematica.bg, borderColor: colors.matematica.border, borderWidth: 1, borderRadius: 6 },
-                        { label: 'Inglese', data: yearData.inglese, backgroundColor: colors.inglese.bg, borderColor: colors.inglese.border, borderWidth: 1, borderRadius: 6 }
-                    ]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    scales: { y: { min: 0, max: 10, grid: { color: 'rgba(255,255,255,0.1)' } } },
-                    plugins: { legend: { position: 'top' } }
-                }
-            });
-
-            // 2. Griglia di Torte per ogni singola classe
-            const gridContainer = document.getElementById(`grid-${yearId}`);
-            gridContainer.innerHTML = ''; // Pulisce il contenitore
-            
-            yearData.labels.forEach((className, i) => {
-                let ita = yearData.italiano[i];
-                let mat = yearData.matematica[i];
-                let ing = yearData.inglese[i];
-
-                // Crea la Card HTML per la singola classe (Risolto bug 'sticky', layout aggiornato)
-                let cardHTML = `
-                    <div class="glass-card rounded-3xl p-6 flex flex-col xl:flex-row gap-6 items-stretch border border-white/5 hover:border-white/20 transition-all">
-                        <div class="w-full xl:w-4/12 flex flex-col items-center justify-center border-b xl:border-b-0 xl:border-r border-white/10 pb-6 xl:pb-0 pr-0 xl:pr-6">
-                            <h4 class="text-4xl font-black text-white mb-2 drop-shadow-lg tracking-tight">Classe ${className}</h4>
-                            <p class="text-[10px] text-white/50 mb-6 uppercase tracking-[0.2em] bg-black/20 px-4 py-1.5 rounded-full border border-white/5">Profilo Competenze</p>
-                            <div class="relative w-full h-64 drop-shadow-[0_0_20px_rgba(255,255,255,0.05)] transition-transform hover:scale-105 duration-500">
-                                <canvas id="pie-${yearId}-${i}"></canvas>
+                const cardHTML = `
+                    <div class="card flex flex-col md:flex-row gap-6 hover:border-indigo-200 transition-colors">
+                        <!-- Area Grafico (Sinistra) -->
+                        <div class="w-full md:w-5/12 flex flex-col items-center">
+                            <h4 class="w-full text-center font-bold text-slate-800 mb-3 bg-slate-50 py-2 rounded-lg border border-slate-200">${classe}</h4>
+                            <div class="relative h-48 w-full">
+                                <canvas id="${chartId}"></canvas>
                             </div>
                         </div>
-                        <div class="w-full xl:w-8/12 flex flex-col justify-center pl-0 xl:pl-4">
-                            ${generateArticulatedText(ita, mat, ing, className)}
+                        <!-- Area Testo Dettagliato (Destra) -->
+                        <div class="w-full md:w-7/12">
+                            ${generaTestoClasse(classe, ita, mat, ing)}
                         </div>
                     </div>
                 `;
-                gridContainer.insertAdjacentHTML('beforeend', cardHTML);
+                container.insertAdjacentHTML('beforeend', cardHTML);
 
-                // Disegna il grafico a Torta (Doughnut) con percentuali interne
-                let ctxPie = document.getElementById(`pie-${yearId}-${i}`);
-                new Chart(ctxPie, {
+                // Disegna il grafico a torta (Doughnut)
+                new Chart(document.getElementById(chartId), {
                     type: 'doughnut',
                     data: {
                         labels: ['Italiano', 'Matematica', 'Inglese'],
@@ -637,145 +349,135 @@
                             data: [ita, mat, ing],
                             backgroundColor: [colors.italiano.bg, colors.matematica.bg, colors.inglese.bg],
                             borderColor: [colors.italiano.border, colors.matematica.border, colors.inglese.border],
-                            borderWidth: 2, hoverOffset: 15
+                            borderWidth: 2,
+                            hoverOffset: 4
                         }]
                     },
                     options: {
                         responsive: true, maintainAspectRatio: false,
-                        layout: { padding: 15 },
-                        plugins: { 
-                            legend: { 
-                                position: 'bottom', 
-                                labels: { color: 'white', boxWidth: 15, padding: 15, font: { size: 13, family: "'Outfit', sans-serif" } } 
-                            },
+                        cutout: '45%', // Ciambella
+                        plugins: {
+                            legend: { display: false }, // Legenda gestita globalmente in cima al tab
                             datalabels: {
                                 color: '#ffffff',
-                                font: { weight: '900', size: 15, family: "'Outfit', sans-serif" },
+                                font: { weight: 'bold', size: 13, family: 'Inter' },
+                                textShadowColor: 'rgba(0,0,0,0.6)', textShadowBlur: 4,
                                 formatter: (value, ctx) => {
                                     let sum = 0;
-                                    let dataArr = ctx.chart.data.datasets[0].data;
-                                    dataArr.map(data => { sum += data; });
-                                    let percentage = (value*100 / sum).toFixed(1)+"%";
-                                    return percentage;
+                                    ctx.chart.data.datasets[0].data.map(data => sum += data);
+                                    let perc = (value * 100 / sum).toFixed(1) + "%";
+                                    return perc; // Mostra solo la percentuale per pulizia visiva, i colori sono noti
                                 },
-                                textShadowColor: 'rgba(0,0,0,1)',
-                                textShadowBlur: 8
+                                textAlign: 'center'
                             }
                         }
                     }
                 });
-            });
-
-            // 3. Aggiunta Tabella Riassuntiva Analitica (Nuova Feature)
-            let tableHTML = `
-            <div class="glass-card rounded-3xl p-8 mt-12 overflow-hidden border-t-4 border-t-indigo-500">
-                <h3 class="text-2xl font-bold mb-6 flex items-center gap-3"><i class="fa-solid fa-table-list text-indigo-400"></i> Dettaglio Analitico Sezioni</h3>
-                <div class="overflow-x-auto rounded-xl border border-white/10">
-                    <table class="w-full text-left border-collapse min-w-[600px]">
-                        <thead>
-                            <tr class="bg-black/40 text-white/60 text-xs uppercase tracking-widest">
-                                <th class="p-4 font-bold border-b border-white/10">Sezione</th>
-                                <th class="p-4 font-bold border-b border-white/10 text-pink-400"><i class="fa-solid fa-book mr-2"></i>Italiano</th>
-                                <th class="p-4 font-bold border-b border-white/10 text-cyan-400"><i class="fa-solid fa-square-root-variable mr-2"></i>Matematica</th>
-                                <th class="p-4 font-bold border-b border-white/10 text-violet-400"><i class="fa-solid fa-language mr-2"></i>Inglese</th>
-                                <th class="p-4 font-bold border-b border-white/10 text-center text-amber-300"><i class="fa-solid fa-calculator mr-2"></i>Media Globale</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-sm">
-            `;
-
-            yearData.labels.forEach((className, i) => {
-                let ita = yearData.italiano[i];
-                let mat = yearData.matematica[i];
-                let ing = yearData.inglese[i];
-                let avg = ((ita + mat + ing) / 3).toFixed(2);
-                
-                tableHTML += `
-                    <tr class="border-b border-white/5 hover:bg-white/5 transition-colors group">
-                        <td class="p-4 font-bold text-white text-base group-hover:text-indigo-300 transition-colors">${className}</td>
-                        <td class="p-4 font-medium text-white/80">${ita.toFixed(2)}</td>
-                        <td class="p-4 font-medium text-white/80">${mat.toFixed(2)}</td>
-                        <td class="p-4 font-medium text-white/80">${ing.toFixed(2)}</td>
-                        <td class="p-4 font-black text-center text-amber-300 bg-amber-400/5">${avg}</td>
-                    </tr>
-                `;
-            });
-
-            tableHTML += `
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            `;
-            
-            gridContainer.insertAdjacentHTML('afterend', tableHTML);
-
-            chartsInitialized[yearId] = true;
+            }
         }
 
-        // --- STREAMING_CHUNK:Logica Esportazione PDF ed Excel... ---
-        function exportToExcel() {
-            showMessage("Generazione File Excel in corso...");
-            const wb = XLSX.utils.book_new();
+        window.onload = function() {
+            // --- 1. Calcolo e Grafico Torta GLOBALE (Eccellenze) Includendo TERZE ---
+            let tuttiVoti = [
+                ...dataPrime.italiano, ...dataPrime.matematica, ...dataPrime.inglese,
+                ...dataSeconde.italiano, ...dataSeconde.matematica, ...dataSeconde.inglese,
+                ...dataTerze.italiano, ...dataTerze.matematica, ...dataTerze.inglese
+            ];
             
-            // Crea un array di dati piatto combinando tutto
-            let exportData = [['Classe', 'Anno', 'Italiano', 'Matematica', 'Inglese', 'Media Generale']];
-            
-            const addData = (obj, anno) => {
-                for(let i=0; i<obj.labels.length; i++) {
-                    let avg = ((obj.italiano[i] + obj.matematica[i] + obj.inglese[i])/3).toFixed(2);
-                    exportData.push([obj.labels[i], anno, obj.italiano[i], obj.matematica[i], obj.inglese[i], avg]);
+            let numEccellenze = tuttiVoti.filter(v => v >= 8).length;
+            let numIntermedi = tuttiVoti.filter(v => v >= 6 && v < 8).length;
+            let numCritici = tuttiVoti.filter(v => v < 6).length;
+            let totaleVoti = tuttiVoti.length;
+
+            new Chart(document.getElementById('chartEccellenze'), {
+                type: 'pie',
+                data: {
+                    labels: ['Eccellenze', 'Intermedi', 'Criticità'],
+                    datasets: [{
+                        data: [numEccellenze, numIntermedi, numCritici],
+                        backgroundColor: [colors.eccellenze, colors.intermedi, colors.criticita],
+                        borderColor: '#ffffff', borderWidth: 3, hoverOffset: 5
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }, // Disabilitata la legenda di Chart.js, usiamo quella HTML custom
+                        datalabels: {
+                            color: '#fff', font: { weight: '900', size: 18, family: 'Inter' }, 
+                            textShadowColor: 'rgba(0,0,0,0.4)', textShadowBlur: 6,
+                            formatter: (value, ctx) => {
+                                if (value === 0) return '';
+                                return (value * 100 / totaleVoti).toFixed(1) + "%";
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Aggiorna testo globale dinamico MOLTO DETTAGLIATO
+            let percEcc = (numEccellenze * 100 / totaleVoti).toFixed(1);
+            let percInt = (numIntermedi * 100 / totaleVoti).toFixed(1);
+            let percCri = (numCritici * 100 / totaleVoti).toFixed(1);
+            let totalePositivo = (parseFloat(percEcc) + parseFloat(percInt)).toFixed(1);
+
+            document.getElementById('testo-globale').innerHTML = `
+                <p class="text-lg font-medium text-slate-700">L'analisi aggrega <strong>${totaleVoti}</strong> valutazioni medie provenienti dai tre anni di corso (Prime, Seconde e Terze).</p>
+                
+                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-lg">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-emerald-800 font-bold uppercase tracking-wide text-xs">Voti Positivi Totali</span>
+                            <span class="text-emerald-700 font-black text-xl">${totalePositivo}%</span>
+                        </div>
+                        <p class="text-emerald-700 text-xs leading-tight">Il sistema scolastico dimostra un'elevata tenuta generale. La stragrande maggioranza delle valutazioni si posiziona al di sopra della sufficienza.</p>
+                    </div>
+                    
+                    <div class="bg-amber-50 border border-amber-200 p-4 rounded-lg">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-amber-800 font-bold uppercase tracking-wide text-xs">Fascia d'Eccellenza</span>
+                            <span class="text-amber-700 font-black text-xl">${percEcc}%</span>
+                        </div>
+                        <p class="text-amber-700 text-xs leading-tight">Quasi un voto su tre è catalogato come eccellenza (≥8), confermando l'efficacia dei percorsi di valorizzazione dei talenti.</p>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-4 border-l-4 border-rose-400 bg-rose-50 rounded-r-lg">
+                    <h4 class="text-rose-800 font-bold text-sm mb-1"><i class="fa-solid fa-bullseye mr-1"></i> Aree di Criticità (${percCri}%)</h4>
+                    <p class="text-rose-700 text-sm">Le insufficienze rappresentano una netta minoranza fisiologica. L'obiettivo istituzionale sarà circoscrivere ulteriormente questo dato intervenendo in modo chirurgico (es. Matematica in alcune sezioni prime e seconde).</p>
+                </div>
+            `;
+
+            // --- 2. Grafici a Barre (Prime, Seconde, Terze) ---
+            const barOptions = {
+                responsive: true, maintainAspectRatio: false,
+                scales: { 
+                    y: { beginAtZero: true, max: 10, grid: { color: '#e2e8f0' } }, 
+                    x: { grid: { display: false } } 
+                },
+                plugins: { 
+                    legend: { display: false }, // Tolta legenda per usare quella HTML
+                    datalabels: { 
+                        display: true, color: '#475569', anchor: 'end', align: 'top', font: {weight: 'bold', size: 11},
+                        formatter: (val) => val.toFixed(1)
+                    } 
                 }
             };
-            
-            addData(data.prime, 'Prime');
-            addData(data.seconde, 'Seconde');
-            addData(data.terze, 'Terze');
 
-            const ws = XLSX.utils.aoa_to_sheet(exportData);
-            XLSX.utils.book_append_sheet(wb, ws, "Medie Parallele");
-            XLSX.writeFile(wb, "Analisi_Prove_Parallele_Avanzata.xlsx");
-            setTimeout(hideMessage, 2000);
-        }
+            const getBarDatasets = (dataObj) => [
+                { label: 'Italiano', data: dataObj.italiano, backgroundColor: colors.italiano.bg, borderColor: colors.italiano.border, borderWidth: 1, borderRadius: 4 },
+                { label: 'Matematica', data: dataObj.matematica, backgroundColor: colors.matematica.bg, borderColor: colors.matematica.border, borderWidth: 1, borderRadius: 4 },
+                { label: 'Inglese', data: dataObj.inglese, backgroundColor: colors.inglese.bg, borderColor: colors.inglese.border, borderWidth: 1, borderRadius: 4 }
+            ];
 
-        function exportToPDF() {
-            showMessage("Generazione PDF della schermata corrente in corso...");
-            
-            // Troviamo la sezione attualmente attiva
-            const activeSection = document.querySelector('.page-section.active');
-            
-            // Applichiamo temporaneamente stili per la stampa
-            const originalBg = document.body.style.background;
-            document.body.style.background = '#111827'; // Sfondo unito per stampare meglio
-            
-            const opt = {
-                margin:       0.5,
-                filename:     'Verbale_Prove_Parallele.pdf',
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, logging: false },
-                jsPDF:        { unit: 'in', format: 'a3', orientation: 'landscape' }
-            };
+            new Chart(document.getElementById('barPrime'), { type: 'bar', data: { labels: dataPrime.labels, datasets: getBarDatasets(dataPrime) }, options: barOptions });
+            new Chart(document.getElementById('barSeconde'), { type: 'bar', data: { labels: dataSeconde.labels, datasets: getBarDatasets(dataSeconde) }, options: barOptions });
+            new Chart(document.getElementById('barTerze'), { type: 'bar', data: { labels: dataTerze.labels, datasets: getBarDatasets(dataTerze) }, options: barOptions });
 
-            // Salva solo l'area principale (escludendo l'header se vogliamo, o includendolo)
-            html2pdf().set(opt).from(activeSection).save().then(() => {
-                document.body.style.background = originalBg; // Ripristina
-                setTimeout(hideMessage, 1000);
-            });
-        }
-
-        function showMessage(txt) {
-            const el = document.getElementById('export-msg');
-            el.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> ${txt}`;
-            el.classList.remove('hidden');
-        }
-        function hideMessage() {
-            document.getElementById('export-msg').classList.add('hidden');
-        }
-
-        // Avvio Iniziale
-        window.onload = () => {
-            calculateGlobalAverages(); // Calcola medie d'istituto all'avvio
-            switchPage('dashboard');
+            // --- 3. Generazione Torte e Testi per singola classe ---
+            renderTorteClasse(dataPrime, 'torte-prime-container', 'prime');
+            renderTorteClasse(dataSeconde, 'torte-seconde-container', 'seconde');
+            renderTorteClasse(dataTerze, 'torte-terze-container', 'terze');
         };
     </script>
 </body>
