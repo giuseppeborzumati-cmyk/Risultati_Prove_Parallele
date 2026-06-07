@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Report Analitico Parallele - Completo</title>
+    <title>Report Analitico Parallele - Rete Statistica</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -59,7 +59,7 @@
             <h1 class="text-3xl md:text-4xl font-extrabold text-slate-800 tracking-tight">
                 <i class="fa-solid fa-chart-pie text-indigo-600 mr-3"></i>Report Analitico Parallele
             </h1>
-            <p class="text-slate-500 mt-2 text-lg">Report dettagliato Prime, Seconde e Terze con analisi testuale</p>
+            <p class="text-slate-500 mt-2 text-lg">Confronto Rete Statistica, Dettaglio Classi e Analisi Testuale</p>
         </header>
 
         <!-- Menu di Navigazione a Schede (Tabs) -->
@@ -86,12 +86,10 @@
                 </h2>
                 
                 <div class="flex flex-col md:flex-row items-stretch gap-8">
-                    <!-- Grafico a Torta Globale -->
                     <div class="w-full md:w-5/12 flex flex-col justify-center">
                         <div class="relative h-80">
                             <canvas id="chartEccellenze"></canvas>
                         </div>
-                        <!-- Leggenda Globale Diretta -->
                         <div class="mt-4 flex justify-center gap-4 text-sm font-medium">
                             <span class="flex items-center"><span class="legend-dot bg-emerald-500"></span>Eccellenze (≥8)</span>
                             <span class="flex items-center"><span class="legend-dot bg-blue-500"></span>Intermedi (6-7.9)</span>
@@ -99,7 +97,6 @@
                         </div>
                     </div>
                     
-                    <!-- Testo Dettagliato Globale -->
                     <div class="w-full md:w-7/12 bg-white p-6 rounded-xl border border-slate-100 shadow-sm flex flex-col justify-center">
                         <h3 class="text-xl font-extrabold text-slate-800 mb-4 border-b pb-2">Diagnostica Generale</h3>
                         <div id="testo-globale" class="text-slate-600 leading-relaxed space-y-4">
@@ -117,20 +114,25 @@
                     <span class="bg-indigo-100 text-indigo-700 w-10 h-10 flex items-center justify-center rounded-lg mr-3 shadow-sm">1</span>
                     Report Classi Prime
                 </h2>
-                <!-- Leggenda Disciplinare -->
-                <div class="bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200 text-sm font-medium flex gap-4">
+                <div class="bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200 text-sm font-medium flex gap-4 hidden sm:flex">
                     <span class="flex items-center"><span class="legend-dot" style="background-color: #be185d;"></span>Italiano</span>
                     <span class="flex items-center"><span class="legend-dot" style="background-color: #0e7490;"></span>Matematica</span>
                     <span class="flex items-center"><span class="legend-dot" style="background-color: #6d28d9;"></span>Inglese</span>
                 </div>
             </div>
             
-            <div class="card mb-8">
-                <h3 class="text-lg font-bold mb-4 text-center text-slate-700">Confronto Parallelo Medie</h3>
-                <div class="relative h-[300px] w-full"><canvas id="barPrime"></canvas></div>
+            <div class="card mb-8 border-t-4 border-t-indigo-400">
+                <h3 class="text-xl font-bold mb-2 text-center text-slate-800"><i class="fa-solid fa-chart-column mr-2 text-indigo-500"></i>Confronto tra le varie sezioni (Grafico a Colonne)</h3>
+                <p class="text-center text-slate-700 mb-6 max-w-4xl mx-auto text-sm leading-relaxed bg-indigo-50 p-4 rounded-lg border border-indigo-100 shadow-sm">
+                    Questo grafico ci offre una visione d'insieme di tutte le sezioni prime affiancate. Ci permette di individuare se una difficoltà è isolata in una sola sezione o se è un ostacolo condiviso da tutte le classi, potendo così decidere se intervenire con un recupero mirato o riprogettare la didattica per tutto l'anno.
+                </p>
+                <div class="relative h-[300px] w-full mb-8"><canvas id="barPrime"></canvas></div>
+                
+                <!-- CONTAINER RETE STATISTICA PRIME -->
+                <div id="rete-prime"></div>
             </div>
 
-            <h3 class="text-xl font-bold text-slate-700 mb-4 px-2 border-b-2 border-slate-200 pb-2 inline-block">Analisi Dettagliata per Sezione</h3>
+            <h3 class="text-xl font-bold text-slate-700 mb-4 px-2 border-b-2 border-slate-200 pb-2 inline-block">Analisi Dettagliata per Singola Sezione</h3>
             <div class="grid grid-cols-1 xl:grid-cols-2 gap-6" id="torte-prime-container"></div>
         </div>
 
@@ -141,20 +143,25 @@
                     <span class="bg-emerald-100 text-emerald-700 w-10 h-10 flex items-center justify-center rounded-lg mr-3 shadow-sm">2</span>
                     Report Classi Seconde
                 </h2>
-                <!-- Leggenda Disciplinare -->
-                <div class="bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200 text-sm font-medium flex gap-4">
+                <div class="bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200 text-sm font-medium flex gap-4 hidden sm:flex">
                     <span class="flex items-center"><span class="legend-dot" style="background-color: #be185d;"></span>Italiano</span>
                     <span class="flex items-center"><span class="legend-dot" style="background-color: #0e7490;"></span>Matematica</span>
                     <span class="flex items-center"><span class="legend-dot" style="background-color: #6d28d9;"></span>Inglese</span>
                 </div>
             </div>
             
-            <div class="card mb-8">
-                <h3 class="text-lg font-bold mb-4 text-center text-slate-700">Confronto Parallelo Medie</h3>
-                <div class="relative h-[300px] w-full"><canvas id="barSeconde"></canvas></div>
+            <div class="card mb-8 border-t-4 border-t-emerald-400">
+                <h3 class="text-xl font-bold mb-2 text-center text-slate-800"><i class="fa-solid fa-chart-column mr-2 text-emerald-500"></i>Confronto tra le varie sezioni (Grafico a Colonne)</h3>
+                <p class="text-center text-slate-700 mb-6 max-w-4xl mx-auto text-sm leading-relaxed bg-emerald-50 p-4 rounded-lg border border-emerald-100 shadow-sm">
+                    Attraverso questo grafico osserviamo il comportamento delle classi seconde a confronto. Se una sezione spicca particolarmente in una materia, potremmo condividere tra noi docenti il metodo utilizzato; se invece notiamo cali diffusi, sappiamo dove concentrare le energie nel prossimo quadrimestre.
+                </p>
+                <div class="relative h-[300px] w-full mb-8"><canvas id="barSeconde"></canvas></div>
+
+                <!-- CONTAINER RETE STATISTICA SECONDE -->
+                <div id="rete-seconde"></div>
             </div>
 
-            <h3 class="text-xl font-bold text-slate-700 mb-4 px-2 border-b-2 border-slate-200 pb-2 inline-block">Analisi Dettagliata per Sezione</h3>
+            <h3 class="text-xl font-bold text-slate-700 mb-4 px-2 border-b-2 border-slate-200 pb-2 inline-block">Analisi Dettagliata per Singola Sezione</h3>
             <div class="grid grid-cols-1 xl:grid-cols-2 gap-6" id="torte-seconde-container"></div>
         </div>
 
@@ -165,20 +172,25 @@
                     <span class="bg-rose-100 text-rose-700 w-10 h-10 flex items-center justify-center rounded-lg mr-3 shadow-sm">3</span>
                     Report Classi Terze
                 </h2>
-                <!-- Leggenda Disciplinare -->
-                <div class="bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200 text-sm font-medium flex gap-4">
+                <div class="bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200 text-sm font-medium flex gap-4 hidden sm:flex">
                     <span class="flex items-center"><span class="legend-dot" style="background-color: #be185d;"></span>Italiano</span>
                     <span class="flex items-center"><span class="legend-dot" style="background-color: #0e7490;"></span>Matematica</span>
                     <span class="flex items-center"><span class="legend-dot" style="background-color: #6d28d9;"></span>Inglese</span>
                 </div>
             </div>
             
-            <div class="card mb-8">
-                <h3 class="text-lg font-bold mb-4 text-center text-slate-700">Confronto Parallelo Medie</h3>
-                <div class="relative h-[300px] w-full"><canvas id="barTerze"></canvas></div>
+            <div class="card mb-8 border-t-4 border-t-rose-400">
+                <h3 class="text-xl font-bold mb-2 text-center text-slate-800"><i class="fa-solid fa-chart-column mr-2 text-rose-500"></i>Confronto tra le varie sezioni (Grafico a Colonne)</h3>
+                <p class="text-center text-slate-700 mb-6 max-w-4xl mx-auto text-sm leading-relaxed bg-rose-50 p-4 rounded-lg border border-rose-100 shadow-sm">
+                    Il grafico ci permette di valutare la solidità della preparazione in vista dell'esame. Confrontando le sezioni orizzontalmente, capiamo subito se ci sono dislivelli o se stiamo procedendo in modo omogeneo verso il traguardo finale.
+                </p>
+                <div class="relative h-[300px] w-full mb-8"><canvas id="barTerze"></canvas></div>
+
+                <!-- CONTAINER RETE STATISTICA TERZE -->
+                <div id="rete-terze"></div>
             </div>
 
-            <h3 class="text-xl font-bold text-slate-700 mb-4 px-2 border-b-2 border-slate-200 pb-2 inline-block">Analisi Dettagliata per Sezione</h3>
+            <h3 class="text-xl font-bold text-slate-700 mb-4 px-2 border-b-2 border-slate-200 pb-2 inline-block">Analisi Dettagliata per Singola Sezione</h3>
             <div class="grid grid-cols-1 xl:grid-cols-2 gap-6" id="torte-terze-container"></div>
         </div>
 
@@ -190,17 +202,12 @@
 
         // --- GESTIONE TABS (PAGINE) ---
         function openTab(tabId) {
-            // Nascondi tutti i tab
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            // Ripristina stile bottoni
             document.querySelectorAll('nav button').forEach(btn => {
                 btn.className = "px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50";
             });
             
-            // Attiva tab scelto
             document.getElementById(tabId).classList.add('active');
-            
-            // Colora bottone attivo
             let activeBtnId = tabId.replace('tab-', 'btn-');
             let btn = document.getElementById(activeBtnId);
             
@@ -215,7 +222,7 @@
             }
         }
 
-        // --- DATI GREZZI (Inclusi i dati fittizi per le TERZE) ---
+        // --- DATI REALI (Inclusa la III E per le terze) ---
         const dataPrime = {
             labels: ['I A', 'I B', 'I C', 'I D'],
             italiano: [7.0, 7.0, 7.0, 7.7],
@@ -231,91 +238,154 @@
         };
 
         const dataTerze = {
-            labels: ['III A', 'III B', 'III C', 'III D'],
-            italiano: [6.8, 7.5, 6.0, 8.1],
-            matematica: [6.5, 7.2, 5.5, 8.5],
-            inglese: [7.5, 8.0, 6.2, 8.8]
+            labels: ['III A', 'III B', 'III C', 'III D', 'III E'],
+            italiano: [8.6, 5.75, 7.5, 7.0, 7.0],
+            matematica: [7.5, 6.0, 7.0, 8.18, 8.5],
+            inglese: [8.7, 7.0, 7.0, 7.0, 7.38]
         };
 
-        // Colori Estandarizzati (Molto chiari)
         const colors = {
-            italiano: { bg: 'rgba(219, 39, 119, 0.85)', border: '#9d174d' }, // Pink deciso
-            matematica: { bg: 'rgba(8, 145, 178, 0.85)', border: '#155e75' }, // Cyan deciso
-            inglese: { bg: 'rgba(124, 58, 237, 0.85)', border: '#5b21b6' },   // Violet deciso
-            eccellenze: 'rgba(16, 185, 129, 0.85)', // Emerald
-            intermedi: 'rgba(59, 130, 246, 0.85)',  // Blue
-            criticita: 'rgba(244, 63, 94, 0.85)'    // Rose
+            italiano: { bg: 'rgba(219, 39, 119, 0.85)', border: '#9d174d' }, 
+            matematica: { bg: 'rgba(8, 145, 178, 0.85)', border: '#155e75' }, 
+            inglese: { bg: 'rgba(124, 58, 237, 0.85)', border: '#5b21b6' },   
+            eccellenze: 'rgba(16, 185, 129, 0.85)', 
+            intermedi: 'rgba(59, 130, 246, 0.85)',  
+            criticita: 'rgba(244, 63, 94, 0.85)'    
         };
 
-        // --- FUNZIONE: Generatore di Testi Analitici Dettagliati e Strutturati ---
+        // --- NUOVA FUNZIONE: Generatore Rete Statistica Disciplinare (Confronto Orizzontale) ---
+        function generaReteStatistica(dataObj) {
+            function analizzaMateria(nomeMateria, arrayVoti, classi, coloreTesto, icona) {
+                let maxVoto = Math.max(...arrayVoti);
+                let minVoto = Math.min(...arrayVoti);
+                let media = (arrayVoti.reduce((a,b)=>a+b,0) / arrayVoti.length).toFixed(2);
+                
+                // Gestione multipla per parimerito
+                let maxArr = classi.filter((c, i) => arrayVoti[i] === maxVoto);
+                let minArr = classi.filter((c, i) => arrayVoti[i] === minVoto);
+                
+                let maxSogg = maxArr.length > 1 ? `le sezioni <strong>${maxArr.join(" e ")}</strong>` : `la sezione <strong>${maxArr[0]}</strong>`;
+                let minSogg = minArr.length > 1 ? `le sezioni <strong>${minArr.join(" e ")}</strong>` : `la sezione <strong>${minArr[0]}</strong>`;
+                let scarto = (maxVoto - minVoto).toFixed(2);
+                
+                let testo = `<div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-4">
+                    <h4 class="font-bold ${coloreTesto} text-lg mb-2 flex items-center"><i class="fa-solid ${icona} mr-2"></i> Il confronto orizzontale in ${nomeMateria}</h4>
+                    <p class="text-slate-700 text-[0.95rem] leading-relaxed">`;
+                    
+                testo += `Mettendo tutte le sezioni sulla stessa linea, la media in ${nomeMateria} è di <strong>${media}</strong>. `;
+                
+                if (scarto == 0) {
+                    testo += `È un risultato bellissimo: c'è un allineamento perfetto tra tutte le classi, che viaggiano esattamente sul <strong>${maxVoto}</strong>. Significa che il programma viene recepito in modo identico da tutti i gruppi.`;
+                } else if (scarto <= 0.6) {
+                    testo += `Notiamo una bellissima compattezza tra i vari gruppi. A fare un po' da traino è ${maxSogg} (con <strong>${maxVoto}</strong>), ma anche chi ha registrato il valore "minore", ovvero ${minSogg} (con <strong>${minVoto}</strong>), è rimasto saldamente agganciato al gruppo. La rete didattica tiene benissimo.`;
+                } else if (scarto >= 1.5) {
+                    testo += `Qui invece la "rete" si allarga parecchio e si nota una forte disomogeneità (c'è una differenza sostanziale di ${scarto} punti). Abbiamo una punta di diamante eccezionale: ${maxSogg} tocca il <strong>${maxVoto}</strong>. Di contro, dobbiamo subito riunirci e capire come supportare ${minSogg}, che ha registrato un <strong>${minVoto}</strong> e rischia di staccarsi dal resto del plesso.`;
+                } else {
+                    testo += `Le sezioni stanno procedendo in modo regolare, anche se a ritmi leggermente diversi. ${maxSogg} è quella che ha risposto meglio, arrivando a <strong>${maxVoto}</strong>. Un pochino più staccata c'è ${minSogg} con <strong>${minVoto}</strong>, ma non c'è nulla di allarmante: è un divario che potremo colmare comodamente nel secondo quadrimestre.`;
+                }
+                
+                testo += `</p></div>`;
+                return testo;
+            }
+            
+            let html = `<div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                <h3 class="font-extrabold text-slate-800 text-lg mb-4 uppercase tracking-wide flex items-center">
+                    <i class="fa-solid fa-network-wired text-slate-500 mr-2"></i> Rete Statistica Disciplinare
+                </h3>
+                <p class="text-sm text-slate-500 mb-4 italic">Confronto classe per classe all'interno delle singole materie.</p>`;
+            
+            html += analizzaMateria('Italiano', dataObj.italiano, dataObj.labels, 'text-pink-700', 'fa-book');
+            html += analizzaMateria('Matematica', dataObj.matematica, dataObj.labels, 'text-cyan-700', 'fa-square-root-variable');
+            html += analizzaMateria('Inglese', dataObj.inglese, dataObj.labels, 'text-violet-700', 'fa-language');
+            
+            html += `</div>`;
+            return html;
+        }
+
+        // --- FUNZIONE: Generatore di Testi Singola Classe ---
         function generaTestoClasse(classe, ita, mat, ing) {
             const mediaGenerale = ((ita + mat + ing) / 3).toFixed(2);
             const materie = [
-                { nome: 'Italiano', voto: ita, colore: 'text-pink-700' },
-                { nome: 'Matematica', voto: mat, colore: 'text-cyan-700' },
-                { nome: 'Inglese', voto: ing, colore: 'text-violet-700' }
+                { nome: 'Italiano', voto: ita, colore: 'text-pink-700', bgIcona: 'bg-pink-100', textIcona: 'text-pink-600' },
+                { nome: 'Matematica', voto: mat, colore: 'text-cyan-700', bgIcona: 'bg-cyan-100', textIcona: 'text-cyan-600' },
+                { nome: 'Inglese', voto: ing, colore: 'text-violet-700', bgIcona: 'bg-violet-100', textIcona: 'text-violet-600' }
             ];
-            materie.sort((a, b) => b.voto - a.voto); // Decrescente
+            materie.sort((a, b) => b.voto - a.voto); 
             
             const migliore = materie[0];
             const peggiore = materie[2];
             const intermedia = materie[1];
             const scarto = (migliore.voto - peggiore.voto).toFixed(2);
 
-            let testo = `<div class="text-[0.95rem] text-slate-700 leading-snug h-full flex flex-col justify-between">`;
+            let testo = `<div class="text-[0.95rem] text-slate-700 leading-relaxed h-full flex flex-col gap-3">`;
             
-            // 1. INTRODUZIONE E MEDIA
-            testo += `<div>`;
+            testo += `<div class="bg-slate-50 p-3 rounded-lg border border-slate-100">`;
+            testo += `<h4 class="font-bold text-slate-800 mb-1 border-b border-slate-200 pb-1">Il Quadro Generale</h4>`;
             if (mediaGenerale >= 8) {
-                testo += `<p class="mb-3">La <strong>${classe}</strong> rappresenta un'<strong>eccellenza d'istituto</strong>, registrando una media straordinaria di <span class="bg-emerald-100 text-emerald-800 font-bold px-2 py-1 rounded">${mediaGenerale}</span>.</p>`;
+                testo += `<p>I ragazzi della <strong>${classe}</strong> stanno facendo un lavoro eccezionale. Hanno raggiunto una bellissima media generale di <span class="bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">${mediaGenerale}</span>. La classe è attenta, partecipa volentieri e i risultati si vedono chiaramente.</p>`;
             } else if (mediaGenerale >= 6.5) {
-                testo += `<p class="mb-3">La <strong>${classe}</strong> mostra un solido consolidamento delle competenze, con una media generale di <span class="bg-blue-100 text-blue-800 font-bold px-2 py-1 rounded">${mediaGenerale}</span>.</p>`;
+                testo += `<p>La <strong>${classe}</strong> è una classe solida, che lavora con impegno e costanza. La media generale di <span class="bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded">${mediaGenerale}</span> ci dice che i ragazzi hanno basi sicure e seguono bene le lezioni.</p>`;
             } else if (mediaGenerale >= 6) {
-                testo += `<p class="mb-3">La <strong>${classe}</strong> raggiunge la sufficienza con una media di <span class="bg-amber-100 text-amber-800 font-bold px-2 py-1 rounded">${mediaGenerale}</span>, pur presentando fragilità da monitorare.</p>`;
+                testo += `<p>La <strong>${classe}</strong> riesce a raggiungere la sufficienza con una media di <span class="bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded">${mediaGenerale}</span>. È un risultato positivo, ma che ci fa capire che molti ragazzi stanno faticando per restare a galla e hanno bisogno di essere guidati di più.</p>`;
             } else {
-                testo += `<p class="mb-3">La <strong>${classe}</strong> si trova in <strong>situazione critica</strong>, con una media generale insufficiente pari a <span class="bg-rose-100 text-rose-800 font-bold px-2 py-1 rounded">${mediaGenerale}</span>.</p>`;
+                testo += `<p>La situazione della <strong>${classe}</strong> richiede la nostra massima attenzione. La media di <span class="bg-rose-100 text-rose-800 font-bold px-2 py-0.5 rounded">${mediaGenerale}</span> indica che la classe è in forte difficoltà e molti alunni si sentono disorientati.</p>`;
             }
-
-            // 2. ANALISI EQUILIBRIO (Dettagliato)
+            
             if (scarto <= 0.6) {
-                testo += `<p class="mb-4 text-sm text-slate-600"><i class="fa-solid fa-scale-balanced mr-1 text-slate-400"></i> L'apprendimento è <strong>altamente omogeneo</strong>: lo scarto tra la materia migliore e peggiore è minimo (${scarto} pt). Il gruppo classe risponde in modo uniforme a tutti gli stimoli disciplinari.</p>`;
-            } else if (scarto >= 2.0) {
-                testo += `<p class="mb-4 text-sm text-slate-600"><i class="fa-solid fa-chart-line mr-1 text-slate-400"></i> Si rileva una <strong>forte asimmetria</strong> negli apprendimenti. Un divario di ben ${scarto} punti separa le discipline, indicando una polarizzazione delle attitudini o dinamiche didattiche differenziate da indagare.</p>`;
-            } else {
-                testo += `<p class="mb-4 text-sm text-slate-600"><i class="fa-solid fa-chart-simple mr-1 text-slate-400"></i> La distribuzione è fisiologica. Si notano preferenze di apprendimento ma senza gravi squilibri strutturali tra le materie.</p>`;
+                testo += `<p class="mt-2 text-sm">Guardando il grafico a torta, notiamo un andamento <strong>molto equilibrato</strong>: l'impegno è ben distribuito tra le varie materie senza grandi sbalzi.</p>`;
+            } else if (scarto >= 1.5) {
+                testo += `<p class="mt-2 text-sm">Notiamo però un <strong>forte squilibrio</strong> (differenza di ben ${scarto} punti tra la migliore e la peggiore). I ragazzi si applicano molto in alcuni ambiti, ma tendono a trascurarne altri.</p>`;
             }
             testo += `</div>`;
 
-            // 3. BULLET POINTS (Molto chiari e diretti come richiesto)
-            testo += `<ul class="space-y-2 mt-auto border-t border-slate-100 pt-3">`;
+            testo += `<div>`;
+            testo += `<h4 class="font-bold text-slate-800 mb-2">Il dettaglio delle materie</h4>`;
+            testo += `<ul class="space-y-3">`;
             
-            // Eccellenza / Forza
-            if (migliore.voto >= 8) {
-                testo += `<li class="flex items-start"><i class="fa-solid fa-star text-emerald-500 mt-1 mr-2 w-4"></i> <span><strong>Punta di Diamante:</strong> Prestazioni d'eccellenza assoluta in <span class="${migliore.colore} font-semibold">${migliore.nome}</span> (<strong>${migliore.voto}</strong>).</span></li>`;
-            } else {
-                testo += `<li class="flex items-start"><i class="fa-solid fa-arrow-trend-up text-indigo-500 mt-1 mr-2 w-4"></i> <span><strong>Asset Principale:</strong> Il rendimento più solido si registra in <span class="${migliore.colore} font-semibold">${migliore.nome}</span> (<strong>${migliore.voto}</strong>).</span></li>`;
-            }
+            testo += `<li class="flex items-start bg-white p-2 rounded border border-slate-100 shadow-sm">
+                        <span class="${migliore.bgIcona} ${migliore.textIcona} w-8 h-8 rounded flex items-center justify-center mr-3 shrink-0"><i class="fa-solid fa-star"></i></span>
+                        <div><strong class="${migliore.colore}">Il punto di forza è ${migliore.nome}:</strong> la classe brilla con una media del <strong>${migliore.voto}</strong>. Il metodo funziona e i ragazzi si sentono sicuri.</div>
+                      </li>`;
 
-            // Materia Intermedia
-            testo += `<li class="flex items-start text-sm text-slate-500"><i class="fa-solid fa-minus text-slate-400 mt-1 mr-2 w-4"></i> <span>Rendimento intermedio: ${intermedia.nome} (${intermedia.voto}).</span></li>`;
+            testo += `<li class="flex items-start bg-white p-2 rounded border border-slate-100 shadow-sm">
+                        <span class="${intermedia.bgIcona} ${intermedia.textIcona} w-8 h-8 rounded flex items-center justify-center mr-3 shrink-0"><i class="fa-solid fa-check"></i></span>
+                        <div class="text-slate-600 text-sm mt-1">Ottima tenuta anche in <strong>${intermedia.nome}</strong>, dove i ragazzi si attestano su un buon <strong>${intermedia.voto}</strong>.</div>
+                      </li>`;
 
-            // Debolezza / Criticità
+            testo += `<li class="flex items-start bg-white p-2 rounded border border-slate-100 shadow-sm">`;
             if (peggiore.voto < 6) {
-                testo += `<li class="flex items-start"><i class="fa-solid fa-triangle-exclamation text-rose-500 mt-1 mr-2 w-4"></i> <span><strong>Allarme Rosso:</strong> Gravi lacune rilevate in <span class="${peggiore.colore} font-semibold">${peggiore.nome}</span> (<strong>${peggiore.voto}</strong>). Intervento di recupero obbligatorio.</span></li>`;
+                testo += `<span class="${peggiore.bgIcona} text-rose-600 w-8 h-8 rounded flex items-center justify-center mr-3 shrink-0"><i class="fa-solid fa-triangle-exclamation"></i></span>
+                          <div><strong class="text-rose-600">Da recuperare urgentemente ${peggiore.nome}:</strong> purtroppo qui i risultati crollano a una media di <strong>${peggiore.voto}</strong>.</div>`;
             } else if (peggiore.voto < 6.5) {
-                testo += `<li class="flex items-start"><i class="fa-solid fa-circle-exclamation text-amber-500 mt-1 mr-2 w-4"></i> <span><strong>Attenzione:</strong> <span class="${peggiore.colore} font-semibold">${peggiore.nome}</span> (<strong>${peggiore.voto}</strong>) è l'anello debole. Margini di rischio.</span></li>`;
+                testo += `<span class="${peggiore.bgIcona} text-amber-500 w-8 h-8 rounded flex items-center justify-center mr-3 shrink-0"><i class="fa-solid fa-circle-exclamation"></i></span>
+                          <div><strong class="text-amber-600">Attenzione a ${peggiore.nome}:</strong> fanno più fatica, con una media di <strong>${peggiore.voto}</strong>. Dobbiamo supportarli di più.</div>`;
             } else {
-                 testo += `<li class="flex items-start"><i class="fa-solid fa-check text-blue-500 mt-1 mr-2 w-4"></i> <span><strong>Nessuna Criticità:</strong> La materia più debole (<span class="${peggiore.colore} font-semibold">${peggiore.nome}</span>) mantiene comunque un ottimo <strong>${peggiore.voto}</strong>.</span></li>`;
+                 testo += `<span class="${peggiore.bgIcona} ${peggiore.textIcona} w-8 h-8 rounded flex items-center justify-center mr-3 shrink-0"><i class="fa-solid fa-thumbs-up"></i></span>
+                           <div><strong class="${peggiore.colore}">Nessun anello debole:</strong> persino nella materia "meno forte" (${peggiore.nome}), portano a casa un bel <strong>${peggiore.voto}</strong>.</div>`;
+            }
+            testo += `</li></ul></div>`;
+
+            let consiglio = "";
+            if (peggiore.voto < 6) {
+                consiglio = `Suggerisco di attivare subito uno sportello o dei piccoli gruppi di studio per ${peggiore.nome}, coinvolgendo i compagni più bravi in un'attività di peer-tutoring.`;
+            } else if (mediaGenerale < 6.5) {
+                consiglio = `Il mio consiglio è di lavorare sull'autostima della classe. Incoraggiamoli e aiutiamoli a organizzare meglio lo studio a casa.`;
+            } else if (scarto > 1.5) {
+                consiglio = `Sono ragazzi intelligenti, dobbiamo capire insieme a loro perché c'è così tanta differenza di rendimento. Forse è un problema di approccio allo studio di quella disciplina?`;
+            } else {
+                consiglio = `Continuiamo così! L'armonia in classe e la costanza nello studio stanno dando i loro frutti. Manteniamo questo clima sereno.`;
             }
 
-            testo += `</ul></div>`;
+            testo += `<div class="mt-auto pt-3 border-t border-slate-200">
+                        <p class="text-sm italic text-slate-600"><span class="font-bold text-indigo-600 not-italic mr-1"><i class="fa-regular fa-lightbulb"></i> Il suggerimento:</span> ${consiglio}</p>
+                      </div>`;
+
+            testo += `</div>`;
             return testo;
         }
 
-        // --- FUNZIONE: Renderizza Griglia Torte per ogni anno ---
         function renderTorteClasse(dataObj, containerId, prefixId) {
             const container = document.getElementById(containerId);
-            
             for (let i = 0; i < dataObj.labels.length; i++) {
                 const classe = dataObj.labels[i];
                 const ita = dataObj.italiano[i];
@@ -325,14 +395,22 @@
 
                 const cardHTML = `
                     <div class="card flex flex-col md:flex-row gap-6 hover:border-indigo-200 transition-colors">
-                        <!-- Area Grafico (Sinistra) -->
                         <div class="w-full md:w-5/12 flex flex-col items-center">
                             <h4 class="w-full text-center font-bold text-slate-800 mb-3 bg-slate-50 py-2 rounded-lg border border-slate-200">${classe}</h4>
-                            <div class="relative h-48 w-full">
+                            <div class="relative h-48 w-full mb-3">
                                 <canvas id="${chartId}"></canvas>
                             </div>
+                            <div class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 mt-auto">
+                                <p class="text-xs text-center text-slate-500 font-semibold border-b border-slate-200 mb-1 pb-1">Cosa indicano i colori?</p>
+                                <div class="flex flex-col gap-1 text-xs text-slate-700 font-medium">
+                                    <div class="flex items-center justify-between px-2">
+                                        <span class="flex items-center"><span class="w-3 h-3 rounded-full mr-2" style="background-color: ${colors.italiano.bg}; border: 1px solid ${colors.italiano.border}"></span> Italiano</span>
+                                        <span class="flex items-center"><span class="w-3 h-3 rounded-full mr-2" style="background-color: ${colors.matematica.bg}; border: 1px solid ${colors.matematica.border}"></span> Matematica</span>
+                                        <span class="flex items-center"><span class="w-3 h-3 rounded-full mr-2" style="background-color: ${colors.inglese.bg}; border: 1px solid ${colors.inglese.border}"></span> Inglese</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <!-- Area Testo Dettagliato (Destra) -->
                         <div class="w-full md:w-7/12">
                             ${generaTestoClasse(classe, ita, mat, ing)}
                         </div>
@@ -340,7 +418,6 @@
                 `;
                 container.insertAdjacentHTML('beforeend', cardHTML);
 
-                // Disegna il grafico a torta (Doughnut)
                 new Chart(document.getElementById(chartId), {
                     type: 'doughnut',
                     data: {
@@ -355,9 +432,9 @@
                     },
                     options: {
                         responsive: true, maintainAspectRatio: false,
-                        cutout: '45%', // Ciambella
+                        cutout: '45%', 
                         plugins: {
-                            legend: { display: false }, // Legenda gestita globalmente in cima al tab
+                            legend: { display: false }, 
                             datalabels: {
                                 color: '#ffffff',
                                 font: { weight: 'bold', size: 13, family: 'Inter' },
@@ -365,8 +442,7 @@
                                 formatter: (value, ctx) => {
                                     let sum = 0;
                                     ctx.chart.data.datasets[0].data.map(data => sum += data);
-                                    let perc = (value * 100 / sum).toFixed(1) + "%";
-                                    return perc; // Mostra solo la percentuale per pulizia visiva, i colori sono noti
+                                    return (value * 100 / sum).toFixed(1) + "%";
                                 },
                                 textAlign: 'center'
                             }
@@ -377,7 +453,7 @@
         }
 
         window.onload = function() {
-            // --- 1. Calcolo e Grafico Torta GLOBALE (Eccellenze) Includendo TERZE ---
+            // Torta Globale
             let tuttiVoti = [
                 ...dataPrime.italiano, ...dataPrime.matematica, ...dataPrime.inglese,
                 ...dataSeconde.italiano, ...dataSeconde.matematica, ...dataSeconde.inglese,
@@ -402,7 +478,7 @@
                 options: {
                     responsive: true, maintainAspectRatio: false,
                     plugins: {
-                        legend: { display: false }, // Disabilitata la legenda di Chart.js, usiamo quella HTML custom
+                        legend: { display: false }, 
                         datalabels: {
                             color: '#fff', font: { weight: '900', size: 18, family: 'Inter' }, 
                             textShadowColor: 'rgba(0,0,0,0.4)', textShadowBlur: 6,
@@ -415,53 +491,40 @@
                 }
             });
 
-            // Aggiorna testo globale dinamico MOLTO DETTAGLIATO
             let percEcc = (numEccellenze * 100 / totaleVoti).toFixed(1);
             let percInt = (numIntermedi * 100 / totaleVoti).toFixed(1);
             let percCri = (numCritici * 100 / totaleVoti).toFixed(1);
             let totalePositivo = (parseFloat(percEcc) + parseFloat(percInt)).toFixed(1);
 
             document.getElementById('testo-globale').innerHTML = `
-                <p class="text-lg font-medium text-slate-700">L'analisi aggrega <strong>${totaleVoti}</strong> valutazioni medie provenienti dai tre anni di corso (Prime, Seconde e Terze).</p>
-                
+                <p class="text-lg font-medium text-slate-700">In questo grafico riassumiamo tutti i <strong>${totaleVoti}</strong> voti presi dai nostri ragazzi in tutti gli anni (Prime, Seconde e Terze).</p>
                 <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-lg">
                         <div class="flex items-center justify-between mb-1">
-                            <span class="text-emerald-800 font-bold uppercase tracking-wide text-xs">Voti Positivi Totali</span>
+                            <span class="text-emerald-800 font-bold uppercase tracking-wide text-xs">Voti Buoni e Sufficienti</span>
                             <span class="text-emerald-700 font-black text-xl">${totalePositivo}%</span>
                         </div>
-                        <p class="text-emerald-700 text-xs leading-tight">Il sistema scolastico dimostra un'elevata tenuta generale. La stragrande maggioranza delle valutazioni si posiziona al di sopra della sufficienza.</p>
+                        <p class="text-emerald-700 text-xs leading-tight">La grandissima maggioranza dei nostri alunni va bene. Possiamo essere molto contenti perché quasi tutti hanno superato le prove senza problemi.</p>
                     </div>
-                    
                     <div class="bg-amber-50 border border-amber-200 p-4 rounded-lg">
                         <div class="flex items-center justify-between mb-1">
-                            <span class="text-amber-800 font-bold uppercase tracking-wide text-xs">Fascia d'Eccellenza</span>
+                            <span class="text-amber-800 font-bold uppercase tracking-wide text-xs">I Più Bravi in Assoluto</span>
                             <span class="text-amber-700 font-black text-xl">${percEcc}%</span>
                         </div>
-                        <p class="text-amber-700 text-xs leading-tight">Quasi un voto su tre è catalogato come eccellenza (≥8), confermando l'efficacia dei percorsi di valorizzazione dei talenti.</p>
+                        <p class="text-amber-700 text-xs leading-tight">È bellissimo notare che quasi un ragazzo su tre ha preso un voto alto (da 8 in su). Stiamo facendo un ottimo lavoro per valorizzare chi si impegna tanto.</p>
                     </div>
                 </div>
-
                 <div class="mt-4 p-4 border-l-4 border-rose-400 bg-rose-50 rounded-r-lg">
-                    <h4 class="text-rose-800 font-bold text-sm mb-1"><i class="fa-solid fa-bullseye mr-1"></i> Aree di Criticità (${percCri}%)</h4>
-                    <p class="text-rose-700 text-sm">Le insufficienze rappresentano una netta minoranza fisiologica. L'obiettivo istituzionale sarà circoscrivere ulteriormente questo dato intervenendo in modo chirurgico (es. Matematica in alcune sezioni prime e seconde).</p>
+                    <h4 class="text-rose-800 font-bold text-sm mb-1"><i class="fa-solid fa-bullseye mr-1"></i> I ragazzi che fanno fatica (${percCri}%)</h4>
+                    <p class="text-rose-700 text-sm">C'è una piccola parte di insufficienze. Non sono tante, ma il nostro compito ora è concentrarci per aiutare questi alunni, magari con recuperi mirati.</p>
                 </div>
             `;
 
-            // --- 2. Grafici a Barre (Prime, Seconde, Terze) ---
+            // Grafici a Barre
             const barOptions = {
                 responsive: true, maintainAspectRatio: false,
-                scales: { 
-                    y: { beginAtZero: true, max: 10, grid: { color: '#e2e8f0' } }, 
-                    x: { grid: { display: false } } 
-                },
-                plugins: { 
-                    legend: { display: false }, // Tolta legenda per usare quella HTML
-                    datalabels: { 
-                        display: true, color: '#475569', anchor: 'end', align: 'top', font: {weight: 'bold', size: 11},
-                        formatter: (val) => val.toFixed(1)
-                    } 
-                }
+                scales: { y: { beginAtZero: true, max: 10, grid: { color: '#e2e8f0' } }, x: { grid: { display: false } } },
+                plugins: { legend: { display: false }, datalabels: { display: true, color: '#475569', anchor: 'end', align: 'top', font: {weight: 'bold', size: 11}, formatter: (val) => val.toFixed(1) } }
             };
 
             const getBarDatasets = (dataObj) => [
@@ -474,7 +537,12 @@
             new Chart(document.getElementById('barSeconde'), { type: 'bar', data: { labels: dataSeconde.labels, datasets: getBarDatasets(dataSeconde) }, options: barOptions });
             new Chart(document.getElementById('barTerze'), { type: 'bar', data: { labels: dataTerze.labels, datasets: getBarDatasets(dataTerze) }, options: barOptions });
 
-            // --- 3. Generazione Torte e Testi per singola classe ---
+            // INSERIMENTO DELLE "RETI STATISTICHE" (Il confronto incrociato materia per materia)
+            document.getElementById('rete-prime').innerHTML = generaReteStatistica(dataPrime);
+            document.getElementById('rete-seconde').innerHTML = generaReteStatistica(dataSeconde);
+            document.getElementById('rete-terze').innerHTML = generaReteStatistica(dataTerze);
+
+            // Generazione Torte e Testi per classe
             renderTorteClasse(dataPrime, 'torte-prime-container', 'prime');
             renderTorteClasse(dataSeconde, 'torte-seconde-container', 'seconde');
             renderTorteClasse(dataTerze, 'torte-terze-container', 'terze');
